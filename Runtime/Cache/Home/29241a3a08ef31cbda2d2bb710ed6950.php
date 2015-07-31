@@ -1,0 +1,1 @@
+<?php if (!defined('THINK_PATH')) exit();?>单个人员详细信息查询

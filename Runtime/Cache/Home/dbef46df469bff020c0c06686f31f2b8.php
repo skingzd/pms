@@ -1,0 +1,1 @@
+<?php if (!defined('THINK_PATH')) exit();?>人员管理系统
