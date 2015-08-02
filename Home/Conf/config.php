@@ -19,6 +19,8 @@ return array(
     'DB_MASTER_NUM'         =>  1, // 读写分离后 主服务器数量
     'DB_SLAVE_NO'           =>  '', // 指定从服务器序号
 
-    'URL_PARAMS_BIND_TYPE'  =>  1 //URL变量绑定方式，0变量名绑定，1顺序绑定
+    'URL_PARAMS_BIND_TYPE'  =>  1 , //URL变量绑定方式，0变量名绑定，1顺序绑定
+
+    'SESSION_PREFIX'        =>  'pms',
 
 );

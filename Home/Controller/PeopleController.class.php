@@ -5,8 +5,6 @@ use Think\Controller;
 //人员控制器
 class PeopleController extends Controller {
 
-    private $user = array();
-
     // 列目录，功能选择页面
     public function index(){
         $this->show('人员管理系统');
@@ -14,6 +12,7 @@ class PeopleController extends Controller {
 
     // 单个人员详细信息查询
     public function id($id = null){
+        if( A('User')->checkLevel() < 1 ) $this->error('非法操作');
     	$this->show('单个人员详细信息查询');
 
         //获取人员基本信息
@@ -33,13 +32,12 @@ class PeopleController extends Controller {
     }
 
     //按照人名进行搜索
-    public function search($words = null){
+    public function search($words = null,$page = 1){
+        if( A('User')->checkLevel() < 1 ) $this->error('非法操作');
     	$this->show('人员信息列表');
         echo $this->user['level'];
 
-        // 检查页数参数合法，不合法返回默认值
-        $page = (int) I('post.page') ? : 1 ;
-        $pageNum = (int) I('post.pageNum') ? : 25;
+
         // 如果只给出姓名则按照姓名查找
 
         if($words){
@@ -128,7 +126,7 @@ class PeopleController extends Controller {
     
     public function add(){
 
-        // if( $this->user['level']<3 ) $this->error('无权操作');
+        if( A('User')->checkLevel() < 3 ) $this->error('非法操作');
         //检查身份证是否重复
         $p = M('People');
         $data = $p->where("pid = '%s'",I('post.pid'))->find();
@@ -148,7 +146,7 @@ class PeopleController extends Controller {
     }
 
     public function edit($id = null){
-        // if( $this->user['level']<5 ) $this->error('无权操作');
+        if( A('User')->checkLevel() < 3 ) $this->error('非法操作');
         
         //如果接收Post数据发送pid则按照post内容修改相应pid记录
         $editById = I('post.pid',null);
@@ -177,7 +175,7 @@ class PeopleController extends Controller {
     }
 
     public function del($id){
-        // if( $this->user['level'] < 5 ) $this->error('无权限删除人员信息');
+        if( A('User')->checkLevel() < 3 ) $this->error('非法操作');
 
         $p = M('People');
         $p->status = 0;
