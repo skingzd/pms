@@ -65,7 +65,7 @@ class DepartmentController extends Controller{
 		$check['is_system'] = 1;
 		$check['status'] = 1;
 		$check = $d->where($check)->find();
-		if(!$check) $this->error('无所属系统');
+		if(!$check) $this->error('所属系统选项无效');
 		//创建数据
 		$d->create();
 
@@ -88,13 +88,14 @@ class DepartmentController extends Controller{
 
 			$result = $d->where($where)->save();
 			if(!$result) $this->error('编辑失败');
-			$this->success('编辑成功','?s=/Department/search/'.I('post.dm_name'));
+			$this->success('编辑成功',"Department/search/$id");
+		}else{
+			//返回指定id部门信息
+			$d = M('Department');
+			$data = $d->where("dm_id='%d'",$id)->find();
+			if(!$data) $this->error('未找到数据');
+			dump($data);
 		}
-		//返回指定id部门信息
-		$d = M('Department');
-		$data = $d->where("dm_id='%d'",$id)->find();
-		if(!$data) $this->error('未找到数据');
-		dump($data);
 
 	}
 
@@ -108,8 +109,7 @@ class DepartmentController extends Controller{
 
 		$result = $d->where("dm_id='%d'",$id)->setField('status',0);
 		if(!$result) $this->error('删除失败');
-		$this->success('删除成功','?s=/Department/');
-
+		$this->success('删除成功','Department/index');
 	}
 }	
 ?>
