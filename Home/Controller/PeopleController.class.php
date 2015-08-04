@@ -10,29 +10,6 @@ class PeopleController extends Controller {
         $this->show('人员管理系统');
     }
 
-    // 单个人员详细信息查询
-    public function id($id = null){
-        if( A('User')->checkLevel() < 1 ) $this->error('非法操作');
-    	$this->show('单个人员详细信息查询');
-
-        //获取人员基本信息
-        $p = M('People');
-        if($id == null) $this->error('参数错误');
-        if(strlen($id) > 20) $this->error('参数错误');
-
-        $where['pid'] = $id;
-        $where['status'] = 1;
-        $data = $p->where($where)->select();
-        if(!$data) $this->error('找不到数据');
-        $data = $data[0];
-
-        //获取人员职称信息
-        $t = M('Title');
-        $data['titles'] = $t->where($id)->select();
-
-        dump($data);
-    }
-
     //按照人名进行搜索
     public function search($words = null,$page = 1){
         if( A('User')->checkLevel() < 1 ) $this->error('非法操作');
@@ -56,36 +33,6 @@ class PeopleController extends Controller {
         }
 
         
-        // 检查如果传入数组则进行多条件查询
-        // $words = I('post.conditon');
-        // if(array_key_exists('tables',$words)){
-        //     //实例化空模型
-        //     $model = M();
-        //     //判断需调用表,设置别名
-        //     foreach ($words['tables'] as $value) {
-        //         switch ($value) {
-        //             case 'people':
-        //                 $tables['pms_people'] = 'p';
-        //                 break;
-        //             case 'title':
-        //                 $tables['pms_title'] = 't';
-        //                 break;
-        //             case 'department':
-        //                 $tables['pms_department'] = 'dm';
-        //                 break;
-        //         }
-        //     }
-            
-            
-        //     $result = $model
-        //     ->table($tables)
-        //     ->where($words)
-        //     ->page($page,$pageNum)
-        //     ->select();
-
-        //     if(!$result) E('未找到复合条件人员');
-        //     $this->assign($result);
-        // }
     }
     
     public function add(){
