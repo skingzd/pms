@@ -9,17 +9,19 @@ class TitleController extends Controller {
 		//未设置参数则跳转到欢迎界面显示统计
 		if(!$titleLevel && !$titleType) $this->redirect('welcome');
 
-		$t = M('Ttitle');
+		$t = M('Title');
 		$levelIndex = array('员级' => 1, '助理级' => 2, '中级' => 3, '高级' => 4, '教授级' => 5) ;
-		$typeIndex = $t->distinct(true)->field('title_type')->select();//获得职称在库类别
-	
-		if( !in_array($titleType, $typeIndex) ) $this->error('错误职称类别');
-		if( !array_key_exists($titleLevel, $levelIndex) ) $this->error('错误职称级别');
+		if( !array_key_exists($titleLevel, $levelIndex) ) $this->show('错误职称级别');
+
+		// $tmpTypeIndex = $t->distinct(true)->field('title_type')->select();//获得职称在库类别
+		foreach ($t->distinct(true)->field('title_type')->select() as $value)
+			$typeIndex[] = $value['title_type'];
+
 		//如果参数设置为ALL系列，则不设置该项查找条件，查找全部
-		if($titleLevel != 'allLevel')	$where['level'] = $titleLevel;
-		if($titleType != 'allType')		$where['type'] 	= $titleType;
+		if($titleLevel != 'anyLevel')	$where['title_level'] = $levelIndex[$titleLevel];
+		if($titleType != 'anyType')		$where['title_type'] 	= $titleType;
 		$where['status'] = 1;
-		$order = array('level'=>'desc','type');
+		$order = array('title_level'=>'desc','title_type');
 
 		$data = $t->where($where)->order($order)->page($page,50)->select();
 		if(!$data) $data['_msg'] = '未找到任何数据';
@@ -28,11 +30,15 @@ class TitleController extends Controller {
 	}
 	public function welcome(){
 		//显示职称统计信息
-		$t = M('Ttitle');
-		$data['total']           = $t->count();
-		$data['peopleHaveTitle'] = $t->count('pid');
-		
-		}
+		$t = M('Title');
+		$data['total']           	= $t->count('1');
+		$data['peopleHaveTitle']	= $t->field('count(distinct(`pid`))')->find();
+		$data['levelAndType']=$t
+		->field("`title_type` type,`title_level` level,count(1) count")
+		->order(array('type','level'=>'desc'))
+		->group('`title_type`,`title_level`')
+		->select();
+		dump($data);
 	}
 
 	public function search($words){
