@@ -41,7 +41,7 @@ class TitleController extends Controller {
 		dump($data);
 	}
 
-	public function search($words){
+	public function search($words, $return){
 		//搜索某个人或某个身份证号码
 		if( (int)$words == 0 ){
 			$where['name'] = $words;
@@ -54,6 +54,7 @@ class TitleController extends Controller {
 		if(!$data) $this->error('未找到任何数据');
 		$data['_count'] = count($data);
 		dump($data);
+		if($return) return $data;
 	}
 
 	public function addnew($pid){
