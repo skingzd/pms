@@ -1,0 +1,1 @@
+<?php if (!defined('THINK_PATH')) exit();?>未设置查询条件

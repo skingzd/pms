@@ -1,0 +1,1 @@
+<?php if (!defined('THINK_PATH')) exit();?>高级搜索页面
