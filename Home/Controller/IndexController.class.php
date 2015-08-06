@@ -3,9 +3,12 @@ namespace Home\Controller;
 use Think\Controller;
 class IndexController extends Controller {
 
-   	protected $eduLevelIndex = array(0=>'初中及以下',1=>'高中',2=>'技校',3=>'中专',4=>'大专',5=>'本科',6=>'研究生',7=>'博士');
-    protected $postLevelIndex = array(1 => '副科级',2 => '正科级',3 =>'副总级',4=>'副处级',5=>'正处级',);
-    protected $titleLevelIndex = array('员级' => 1, '助理级' => 2, '中级' => 3, '高级' => 4, '教授级' => 5) ;
+   	public $eduLevelIndex = array(0=>'初中及以下',1=>'高中',2=>'技校',3=>'中专',4=>'大专',5=>'本科',6=>'研究生',7=>'博士');
+    public $postLevelIndex = array(1 => '副科级',2 => '正科级',3 =>'副总级',4=>'副处级',5=>'正处级',);
+    public $titleLevelIndex = array(1 =>'员级', 2=>'助理级' ,3 =>'中级', 4 =>'高级', 5=>'教授级') ;
+    public $postTypeIndex = array('0' => '常规', '1' => '高级别低职务', '-1' => '虚职');
+    
+
     public function index(){
         $this->show('人员管理系统-选择总览项目界面');
         session('user','Admin');
@@ -14,14 +17,17 @@ class IndexController extends Controller {
     public function people($return = false){
     	//人员信息总览
     	$p = M('People');
-    	foreach ($p->field('post_level level,count(1) count')->group('post_level')->select() as $value) {
+        //按照人员级别统计
+        $levelCount = $p->field('post_level level,count(1) count')->order('post_level desc')->group('post_level')->select();
+    	foreach ( $levelCount as $value) {
     		$data[ $this->postLevelIndex[$value['level']] ] = $value['count'];
     	}
-
-    	$typeIndex = array('0' => '常规', '1' => '高级别低职务', '-1' => '虚职');
-    	foreach ($p->field('post_type type,count(1) count')->group('post_type')->select() as $value) {
-    		$data[ $typeIndex[$value['type']] ] = $value['count'];
+        //按照任职类别进行统计
+        $typeCount = $p->field('post_type type,count(1) count')->group('post_type')->select();
+    	foreach ( $typeCount as $value) {
+    		$data[ $this->postTypeIndex[$value['type']] ] = $value['count'];
     	}
+
     	if($return) return $data;
     	dump($data);
     	$this->assign('peopleStatus',$data);
@@ -31,12 +37,11 @@ class IndexController extends Controller {
 
     public function education($return = false){
     	//学历库记载信息总览
-		$e = M('Education');
+		$e = M('Summary_pe');
 		$result = $e
-			->join('pms_people on pms_people.pid = pms_education.pid')
-			->field('pms_people.post_level ,pms_education.edu_level, count(1) count')
-			->group('pms_people.post_level,pms_education.edu_level')
-			->order(array('pms_people.post_level'=>'desc','pms_education.edu_level'=>'desc'))
+			->field('post_level ,edu_level, count(1) count')
+			->group('post_level,edu_level')
+			->order(array('post_level'=>'desc','edu_level'=>'desc'))
 			->select();
 		foreach ($result as $value) {
 			$tmpPostLevelName = $this->postLevelIndex[$value['post_level']];
@@ -50,21 +55,63 @@ class IndexController extends Controller {
 
     public function title($return = false){
     	// 职称类别、级别信息总览
-    	$t = M('Title');
-		$data['total']           	= $t->count('1');
-		$data['peopleHaveTitle']	= $t->field('count(distinct(`pid`))')->find();
-		$data['levelAndType']=$t
-		->field("`title_type` type,`title_level` level,count(1) count")
-		->order(array('type','level'=>'desc'))
-		->group('`title_type`,`title_level`')
-		->select();
-		dump($data);    	
+        $t = M('Summary_pt');
+        $result = $t
+            ->field('post_level ,title_level, count(1) count')
+            ->group('post_level,title_level')
+            ->order(array('post_level'=>'desc','title_level'=>'desc'))
+            // ->fetchSql()
+            ->select();
+            // dump($result);
+        foreach ($result as $value) {
+            $tmpPostLevelName = $this->postLevelIndex[$value['post_level']];
+            $tmpTitleLevelName = $this->titleLevelIndex[$value['title_level']];
+            $data[$tmpPostLevelName][$tmpTitleLevelName] = $value['count'];
+        }
+        if($return)  return $data;
+        dump($data); 
+        $this->assign('titleStatus',$data);	
     }
 
     public function department($return = false){
     	// 部门概况总览
-    	
-    	
+    	$d = M('Department');
+
+        $where['status'] = 1;
+        //返回系统列表
+        $where['is_system'] =1;
+        $system = $d
+        ->field('dm_id,dm_name,is_system')
+        ->where($where)
+        ->order('dm_sort')
+        ->select();
+        //返回部门列表
+        $where['is_system'] = 0;
+        $dm = $d
+        ->where($where)
+        ->field('dm_id,dm_name,by_system')
+        ->order('dm_sort')
+        ->select();
+        
+        //如果带参数则返回相应列表 ID => name 数组；
+        if($return == 'system'){
+            foreach ($system as $sys_value) $returnData[$sys_value['dm_id']] = $sys_value['dm_name'];
+            return $returnData;
+        }elseif($return){
+            foreach ($dm as $dm_value) $returnData[$dm_value['dm_id']] = $dm_value['dm_name'];
+            return $returnData;
+        }
+
+        foreach ($system as $sys_value) {//遍历系统
+            $dmTree[$sys_value['dm_name']] = array();
+            foreach ($dm as $dm_value) {//遍历单位
+                if($dm_value['by_system'] == $sys_value['dm_id'])
+                    $dmTree[$sys_value['dm_name']][$dm_value['dm_id']] = $dm_value['dm_name'];
+            }
+            $dmTree[$sys_value['dm_name']]['_count'] = count($dmTree[$sys_value['dm_name']]);
+        }
+        dump($dmTree); 
+        $this->assign('dmTree',$dmTree);
     }
 
 }
