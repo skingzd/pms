@@ -55,6 +55,7 @@ class PeopleController extends Controller {
             }
 
         }
+        dump($data);
 
         
         // 检查如果传入数组则进行多条件查询

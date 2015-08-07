@@ -10,11 +10,15 @@ class IndexController extends Controller {
     
 
     public function index(){
+        A('User')->checkLevel();
         $this->show('人员管理系统-选择总览项目界面');
-        session('user','Admin');
+        dump($this->people());
+        dump($this->education());
+        dump($this->title());
+        dump(A('Common')->getDm());
     }
 
-    public function people($return = false){
+    protected function people($ajax = false){
     	//人员信息总览
     	$p = M('People');
         //按照人员级别统计
@@ -27,15 +31,12 @@ class IndexController extends Controller {
     	foreach ( $typeCount as $value) {
     		$data[ $this->postTypeIndex[$value['type']] ] = $value['count'];
     	}
-
-    	if($return) return $data;
-    	dump($data);
-    	$this->assign('peopleStatus',$data);
-
-    	
+        // dump($data); 
+    	if($ajax) $this->ajaxReturn($data);
+        return $data;
     }
 
-    public function education($return = false){
+    protected function education($ajax = false){
     	//学历库记载信息总览
 		$e = M('Summary_pe');
 		$result = $e
@@ -48,12 +49,12 @@ class IndexController extends Controller {
 			$tmpEduLevelName = $this->eduLevelIndex[$value['edu_level']];
 			$data[$tmpPostLevelName][$tmpEduLevelName] = $value['count'];
 		}
-		if($return)  return $data;
-		dump($data); 
-		$this->assign('educationStatus',$data);
+        // dump($data); 
+        if($ajax) $this->ajaxReturn($data);
+        return $data;
     }
 
-    public function title($return = false){
+    protected function title($ajax = false){
     	// 职称类别、级别信息总览
         $t = M('Summary_pt');
         $result = $t
@@ -68,13 +69,13 @@ class IndexController extends Controller {
             $tmpTitleLevelName = $this->titleLevelIndex[$value['title_level']];
             $data[$tmpPostLevelName][$tmpTitleLevelName] = $value['count'];
         }
-        if($return)  return $data;
-        dump($data); 
-        $this->assign('titleStatus',$data);	
+        // dump($data); 
+        if($ajax) $this->ajaxReturn($data);
+        return $data;
     }
-
-    public function department($return = false){
-    	// 部门概况总览
+/*
+    public function department($ajax = false){
+         老版部门树
     	$d = M('Department');
 
         $where['status'] = 1;
@@ -94,7 +95,7 @@ class IndexController extends Controller {
         ->select();
         
         //如果带参数则返回相应列表 ID => name 数组；
-        if($return == 'system'){
+        if($ajax == 'system'){
             foreach ($system as $sys_value) $returnData[$sys_value['dm_id']] = $sys_value['dm_name'];
             return $returnData;
         }elseif($return){
@@ -112,6 +113,7 @@ class IndexController extends Controller {
         }
         dump($dmTree); 
         $this->assign('dmTree',$dmTree);
+        
     }
-
+*/
 }
