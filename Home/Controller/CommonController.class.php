@@ -89,30 +89,41 @@ Class CommonController extends Controller{
 		}
 	}
 
-	public function getDm($id = null, $getChild = false, $ajax = false){
+	public function getDm($id = 0, $getChild = false, $ajax = false){
 		A('User')->checkLevel();
 		//返回单个部门 dm_id => dm_name
 		$d = M('Department');
 		$where['status'] = 1;
-		if($id === null){
-			$where['by_parent'] = 0;
-			$result = $d->field('dm_id,dm_name')->order('dm_sort')->where($where)->select();
-			foreach ($result as $value)	$dm[$value['dm_id']] = $value['dm_name'];
-		}else{
-			if($getChild){//判定是否返回子部门列表
-				$where['by_parent'] = $id;
-				$result = $d->field('dm_id,dm_name')->order('dm_sort')->where($where)->select();
-				foreach ($result as $value)	$dm[$value['dm_id']] = $value['dm_name'];
-			}else{
-				//返回单个dm_id => dm_name
-				$where['dm_id'] = $id;
-				$result = $d->field('dm_id,dm_name')->where($where)->find();
-				$dm[$result['dm_id']] = $result['dm_name'];
+				
+		// $result = $d->field('dm_id,dm_name')->order('dm_sort')->where($where)->select();
+		// foreach ($result as $value)	$dm[$value['dm_id']] = $value['dm_name'];
+	
+		if($getChild){//判定是否返回子部门列表
+			$where['by_parent'] = $id;
+			$result = $d
+						->field('dm_id,dm_name,is_parent')
+						->order('dm_sort')
+						->where($where)
+						->select();
+			foreach ($result as $value){
+				$dm[$value['dm_id']]['name'] = $value['dm_name'];
+				$dm[$value['dm_id']]['is_parent'] = $value['is_parent'];
 			}
+		}else{
+			//返回单个dm_id => dm_name
+			$where['dm_id'] = $id;
+			$result = $d
+						->field('dm_id,dm_name,is_parent,date_dm_setup,commit')
+						->where($where)
+						->find();
+			$dm["name"] = $result["dm_name"];
+			$dm["is_parent"] = $result["is_parent"];
+			$dm["date_setup"] = $result["date_setup"];
+			$dm["commit"] = $result["commit"];
 		}
-		dump($dm);
 		if($ajax) $this->ajaxReturn($dm);
 		return $dm;
+		
 	}
 
 	public function getDmTree($byId = 0){
