@@ -31,6 +31,7 @@ class PeopleController extends Controller {
             $data['_count'] = count($data);
             dump($data);
         }
+        dump($data);
 
         
     }

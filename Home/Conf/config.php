@@ -24,5 +24,6 @@ return array(
 
     'SESSION_PREFIX'        =>  'pms',//session前缀
     'COOKIE_PREFIX'         =>  'pms',//Cookieq前缀
+    'URL_PREFIX_CUSTOM'     =>  '/',
 
 );

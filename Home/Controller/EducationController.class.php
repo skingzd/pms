@@ -12,7 +12,7 @@ Class EducationController extends Controller{
 		dump($data);
 	}
 
-	public function search($words = null, $page = 1,$retrun =0){
+	public function search($words = null, $page = 1,$retrun = false){
 		$e = M('Education');
 
 		if(!$words) $this->show('返回搜索框');
