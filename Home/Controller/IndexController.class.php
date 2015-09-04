@@ -12,13 +12,12 @@ class IndexController extends Controller {
     public function index(){
         A('User')->checkLevel();
         $this->show('人员管理系统-选择总览项目界面');
-        dump($this->people());
-        dump($this->education());
+
         dump($this->title());
         dump(A('Common')->getDm());
     }
 
-    protected function people($ajax = false){
+    public function people($ajax = false){
     	//人员信息总览
     	$p = M('People');
         //按照人员级别统计
@@ -36,7 +35,7 @@ class IndexController extends Controller {
         return $data;
     }
 
-    protected function education($ajax = false){
+    public function education($ajax = false){
     	//学历库记载信息总览
 		$e = M('Summary_pe');
 		$result = $e
@@ -47,14 +46,18 @@ class IndexController extends Controller {
 		foreach ($result as $value) {
 			$tmpPostLevelName = $this->postLevelIndex[$value['post_level']];
 			$tmpEduLevelName = $this->eduLevelIndex[$value['edu_level']];
+            $data[$tmpPostLevelName]['总计'] += $value['count'];
 			$data[$tmpPostLevelName][$tmpEduLevelName] = $value['count'];
 		}
-        // dump($data); 
+        // dump($data);
+        $this->assign("data",$data);
+        $this->display();
+
         if($ajax) $this->ajaxReturn($data);
         return $data;
     }
 
-    protected function title($ajax = false){
+    public function title($ajax = false){
     	// 职称类别、级别信息总览
         $t = M('Summary_pt');
         $result = $t

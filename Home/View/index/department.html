@@ -10,6 +10,29 @@
 		h3{
 			font-family: "黑体" !important;
 		}
+    .dm-path li{
+      cursor: pointer;    
+      color: #707070;
+    }
+    .dm-path .active{
+      cursor: auto; 
+      color: #D0D0D0;
+    }
+    .dm-list{
+      cursor:pointer;
+    }
+    .list-group .active{
+      background-color: #888888;
+      border-color: #707070;
+    }
+    .list-group .active:hover{
+      background-color: #707070;
+      border-color: #606060;
+    }
+    .list-group .active:focus{
+      background-color: #888888;
+      border-color: #606060;
+    }
 		</style>
 	</head>
 <body>
@@ -19,27 +42,24 @@
 <div class="row">
   <div class="col-xs-12">
     <ol class="breadcrumb dm-path" id="dmPath">
-      <li id="p0" onclick="switchPath(this)"><a href="javascript:;">四矿</a></li>
-      <li id="p10" onclick="switchPath(this)"><a href="javascript:;">机关</a></li>
-      <li class="active">组织科</li>
     </ol>
   </div>
 </div>
 
 <div class="row">
   <div class="col-xs-2 col-sm-3">
-    <ul class="list-group" id="dmList">
-    <a class="list-group-item" id="dm1" href="javascript:;" onclick="switchDm(this)">人力资源科</a>
-    <a class="list-group-item active" id="dm2" href="javascript:;" onclick="switchDm(this)">组织科</a>
-    <a class="list-group-item" id="dm3" href="javascript:;" onclick="switchDm(this)">办公室</a>
-    <a class="list-group-item" id="dm4" href="javascript:;" onclick="switchDm(this)">五中四科</a>
+    <ul class="list-group dm-list" id="dmList">
+<!--     <a class="list-group-item" id="21" onclick="goToDm(21)">人力资源科</a>
+    <a class="list-group-item active" id="22" onclick="goToDm(22)">组织科</a>
+    <a class="list-group-item" id="23" onclick="goToDm(23)">办公室</a>
+    <a class="list-group-item" id="42" onclick="goToDm(42)">五中四科</a> -->
   </ul>
   </div>
   <div class="col-xs-10 col-sm-9">
     <table class="table table-striped table-hover">
-      <caption><h4>组织科</h4></caption>
+      <caption><h4 id="pListTitle">组织科</h4></caption>
       <thead>
-        <tr id="pListTitle">
+        <tr>
           <th scope="row">#</th>
           <th>姓名</th>
           <th>性别</th>
@@ -73,19 +93,9 @@
   </div>
 </div>
 
-
-
-
-
   <!-- 单位列表 -->
-  
-
-</block> <!-- /content block -->
+  </block> <!-- /content block -->
 </div><!-- /div container -->
-
-
-
-
 
 
 
@@ -95,31 +105,80 @@
 	<script src="/Public/js/bootstrap.min.js"></script>
 
   <script type="text/javascript">
-  dmList = document.getElementById('dmList');
-  dmPath = document.getElementById('dmPath');
-  function getLastNode(x){
-    x = x.lastChild;
-    while(x.nodeName == "#text"){
-      x = x.previousSibling;
-    }
-    return x;
+
+  var dmList;
+  $("document").ready(function(){
+    initial();
+  })
+
+  function initial(){
+    var txt,rootDm;
+    $("#dmPath").text("加载中...");
+    $.get("/index.php/Common/getDm/0/0/1",function(rootDm){
+      txt = $("<li></li>").text(rootDm["name"]).attr("id",0).addClass("active");
+      $("#dmPath").empty().append(txt);
+    });
+    dmListLoadFrom(0);
+  }
+  
+  function pListLoadFrom(id){
+    // 动态加载人员列表框内容
+    var data;
+    $("#pListTitle").text(dmList[id]["name"]);
+    
+
   }
 
-  function switchPath(current){
-    //清除点击路径后所有子部门，并设定点击部门类为激活
-    last = getLastNode(dmPath);
-    while(last.innerHTML != current.innerHTML){
-      dmPath.removeChild(last);
-      last = getLastNode(dmPath);
-    }
-    currentContent = getLastNode(current);
-    current.innerHTML = currentContent.innerHTML;
-    current.className = "active";
+  function dmListLoadFrom(id){
+    //动态加载单位列表
+    var dm,key,txt;
+    $("#dmList").empty().text("加载中...");
+    $.get("/index.php/Common/getDm/"+id+"/1/1",function(dm){
+      $("#dmList").empty();
+      for(key in dm){
+        txt = $("<a></a>")
+              .addClass("list-group-item")
+              .attr("id",key)
+              .text(dm[key]['name'])
+              .click(key,function(k){goToDm(k.data)});
+        $("#dmList").append(txt);
+      }
+      // 更新单位列表
+      dmList = dm;
+    });    
   }
 
-  function switchDm(targetDm){
-    dmId = targetDm.id;
-    alert(dmId);
+  function backToDm(id){
+    $("#dmPath>li#"+id+"~li").remove();
+    $("#dmPath>li#"+id).addClass("active").unbind("click");
+    dmListLoadFrom(id);
+  }
+
+  function goToDm(id){
+    var lastPath,lastId,txt,isParent;
+    lastPath = $("#dmPath>li:last");
+    lastId = $(lastPath).attr("id");
+    if(typeof(dmList[id]) != "undefined") isParent = dmList[id]["is_parent"];
+    if(isParent == 1){
+      //移除当前单位样式，恢复点击跳转
+      $(lastPath).removeClass().click(lastId,function(n){backToDm(n.data)});
+      //添加新路径为id部门
+      txt = $("<li></li>")
+            .addClass('active')
+            .attr("id",id)
+            .text(dmList[id]["name"]);
+      $("#dmPath").append(txt);
+
+      dmListLoadFrom(id);
+      pListLoadFrom(id);
+    }else{
+      //不是父部门则更改路径当前位置
+      $(lastPath).attr("id",id).text( dmList[id]["name"] );
+      // 去掉当前活动部门样式，设置新部门为活动样式
+      $("#dmList>a#"+lastId).removeClass().addClass("list-group-item");
+      $("#dmList>a#"+id).addClass("active");
+      pListLoadFrom(id);
+    }
   }
   </script>
 
