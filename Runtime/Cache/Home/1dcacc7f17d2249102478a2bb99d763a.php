@@ -1,1 +1,0 @@
-<?php if (!defined('THINK_PATH')) exit();?>返回搜索框

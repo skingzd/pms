@@ -1,1 +1,0 @@
-<?php if (!defined('THINK_PATH')) exit();?>人员选择、编辑项目选择页

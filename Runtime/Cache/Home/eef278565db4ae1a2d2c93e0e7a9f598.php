@@ -1,1 +1,0 @@
-<?php if (!defined('THINK_PATH')) exit();?>echo "人员管理系统"
