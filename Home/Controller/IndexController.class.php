@@ -11,13 +11,12 @@ class IndexController extends Controller {
 
     public function index(){
         A('User')->checkLevel();
-        $this->show('人员管理系统-选择总览项目界面');
-        $this->redirect("people");
-        
+        $this->display();        
     }
 
     public function people(){
         A('User')->checkLevel();
+ 
     	//人员信息总览
     	$p = M('People');
         //按照人员级别统计
@@ -32,17 +31,17 @@ class IndexController extends Controller {
     	}
 
         $data['干部总数'] = $data['虚职'] + $data['常规'] + $data['高级别低职务'];
-        // dump($data); 
 
-        // return $data;
         $this->assign("summary",$data);
         $this->display();
     }
 
     public function education($ajax = false){
+
         A('User')->checkLevel();
+
     	//学历库记载信息总览
-		$e = M('Summary_pe');
+		$e = M('Summary');
 		$result = $e
 			->field('post_level ,edu_level, count(1) count')
 			->group('post_level,edu_level')
@@ -51,75 +50,44 @@ class IndexController extends Controller {
 		foreach ($result as $value) {
 			$tmpPostLevelName = $this->postLevelIndex[$value['post_level']];
 			$tmpEduLevelName = $this->eduLevelIndex[$value['edu_level']];
+            $data[$tmpPostLevelName]['总计'] += $value['count'];
 			$data[$tmpPostLevelName][$tmpEduLevelName] = $value['count'];
 		}
-        // dump($data); 
+        // dump($data);
+        $this->assign("data",$data);
+        $this->display();
+
         if($ajax) $this->ajaxReturn($data);
         return $data;
     }
 
-    public function title($ajax = false){
+    public function title(){
+
         A('User')->checkLevel();
+
     	// 职称类别、级别信息总览
-        $t = M('Summary_pt');
+        $t = M('Summary');
         $result = $t
             ->field('post_level ,title_level, count(1) count')
             ->group('post_level,title_level')
             ->order(array('post_level'=>'desc','title_level'=>'desc'))
-            // ->fetchSql()
+             // ->fetchSql()
             ->select();
             // dump($result);
         foreach ($result as $value) {
             $tmpPostLevelName = $this->postLevelIndex[$value['post_level']];
             $tmpTitleLevelName = $this->titleLevelIndex[$value['title_level']];
+            if(!$value['title_level']) $tmpTitleLevelName = "无职称";
             $data[$tmpPostLevelName][$tmpTitleLevelName] = $value['count'];
         }
         // dump($data); 
-        if($ajax) $this->ajaxReturn($data);
-        return $data;
+        $this->assign("levelSummary",$data);
+        $this->display();
     }
-/*
-    public function department($ajax = false){
-         老版部门树
-    	$d = M('Department');
 
-        $where['status'] = 1;
-        //返回系统列表
-        $where['is_system'] =1;
-        $system = $d
-        ->field('dm_id,dm_name,is_system')
-        ->where($where)
-        ->order('dm_sort')
-        ->select();
-        //返回部门列表
-        $where['is_system'] = 0;
-        $dm = $d
-        ->where($where)
-        ->field('dm_id,dm_name,by_system')
-        ->order('dm_sort')
-        ->select();
-        
-        //如果带参数则返回相应列表 ID => name 数组；
-        if($ajax == 'system'){
-            foreach ($system as $sys_value) $returnData[$sys_value['dm_id']] = $sys_value['dm_name'];
-            return $returnData;
-        }elseif($return){
-            foreach ($dm as $dm_value) $returnData[$dm_value['dm_id']] = $dm_value['dm_name'];
-            return $returnData;
-        }
-
-        foreach ($system as $sys_value) {//遍历系统
-            $dmTree[$sys_value['dm_name']] = array();
-            foreach ($dm as $dm_value) {//遍历单位
-                if($dm_value['by_system'] == $sys_value['dm_id'])
-                    $dmTree[$sys_value['dm_name']][$dm_value['dm_id']] = $dm_value['dm_name'];
-            }
-            $dmTree[$sys_value['dm_name']]['_count'] = count($dmTree[$sys_value['dm_name']]);
-        }
-        dump($dmTree); 
-        $this->assign('dmTree',$dmTree);
-        
-
+    public function department(){
+        A('User')->checkLevel();
+        $this->display();
     }
-*/
+
 }

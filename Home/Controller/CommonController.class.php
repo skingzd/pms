@@ -113,17 +113,48 @@ Class CommonController extends Controller{
 			//返回单个dm_id => dm_name
 			$where['dm_id'] = $id;
 			$result = $d
-						->field('dm_id,dm_name,is_parent,date_dm_setup,commit')
-						->where($where)
-						->find();
+					->field('dm_id,dm_name,is_parent,date_dm_setup,comment')
+					->where($where)
+					->find();
 			$dm["name"] = $result["dm_name"];
 			$dm["is_parent"] = $result["is_parent"];
 			$dm["date_setup"] = $result["date_setup"];
-			$dm["commit"] = $result["commit"];
+			$dm["comment"] = $result["comment"];
 		}
 		if($ajax) $this->ajaxReturn($dm);
 		return $dm;
-		
+	}
+
+	public function getDmP($id = '0', $includeChild = false, $page = 1, $ajax = false)
+	{
+		$p = M("People");
+		$where['status'] = 1;
+		$where["dm_id"] = $id;
+		$field = "pid,name,sex,birthday,date_startwork,dm_id,post,post_level";
+		$postLevelIndex = A("Index")->postLevelIndex;
+		//页码设置出错则直接跳出
+		if($page < 1) $data['_msg'] = "页码错误";
+
+		if($includeChild){
+		//遍历子部门，包含子部门所有人员
+
+		}else{
+		//只查询当前部门
+			$resultCount = $p -> where($where) ->count();
+			$result = $p 
+					-> field($field)
+					-> where($where)
+					-> order("post_level desc,name")
+					-> page($page,3)
+					-> select();
+			//修改级别为中文
+			foreach ($result as $k => $v) $result[$k]["post_level"] = $postLevelIndex[$v["post_level"]];
+			$data['resultCount'] = (int) $resultCount;
+			$data['result'] = $result;
+		}
+		// dump($result);
+		if($ajax) $this->ajaxReturn($data);
+		return $data;
 	}
 
 	public function getDmTree($byId = 0){

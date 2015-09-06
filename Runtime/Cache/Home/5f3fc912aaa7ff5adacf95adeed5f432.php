@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<?php if (!defined('THINK_PATH')) exit();?><!DOCTYPE html>
 <html lang="zh-cn">
 <head>
 	<meta charset="utf-8">
@@ -7,7 +7,14 @@
 	<title>PMS</title>
 	<link href="/Public/css/bootstrap.min.css" rel="stylesheet">
 	<link href="/Public/css/pms.css" rel="stylesheet">
-  <block name="head"></block>
+  
+<style>
+
+.carousel{
+	margin: 20px 0;
+}
+</style>
+
 </head>
 <body>
 <div class="container">
@@ -15,7 +22,7 @@
 <div class="header" id="header">
   <!-- 顶部登录、用户状态框 -->
   <div class="top-status">
-    <div class="status-bar"><span class="logo"></span>欢迎 <a href="/index.php/User/index.html">{$user}</a>. 退出登录</div>
+    <div class="status-bar"><span class="logo"></span>欢迎 <a href="/index.php/User/index.html"><?php echo ($user); ?></a>. 退出登录</div>
   </div>
   <!-- 搜索框 -->
   <div class="top-search">
@@ -49,8 +56,42 @@
     </nav>
 </div>
 
-<block name="content">
-</block>
+
+<div class="content-min-height">
+<div id="carousel" class="carousel slide" data-ride="carousel">
+  <!-- Indicators -->
+  <ol class="carousel-indicators">
+    <li data-target="#carousel" data-slide-to="0" class="active"></li>
+    <li data-target="#carousel" data-slide-to="1"></li>
+    <li data-target="#carousel" data-slide-to="2"></li>
+  </ol>
+
+  <!-- Wrapper for slides -->
+  <div class="carousel-inner" role="listbox">
+    <div class="item active">
+    	<img src="/Public/image/carousel_people.jpg" />
+    </div>
+    <div class="item">
+			<img src="/Public/image/carousel_edu.jpg" />
+    </div>
+    <div class="item">
+      <img src="/Public/image/carousel_title.jpg" />
+    </div>
+  </div>
+
+  <!-- Controls -->
+  <a class="left carousel-control" href="#carousel" role="button" data-slide="prev">
+    <span class="glyphicon glyphicon-chevron-left" aria-hidden="true"></span>
+    <span class="sr-only">Previous</span>
+  </a>
+  <a class="right carousel-control" href="#carousel" role="button" data-slide="next">
+    <span class="glyphicon glyphicon-chevron-right" aria-hidden="true"></span>
+    <span class="sr-only">Next</span>
+  </a>
+</div> <!-- /carousel -->
+</div>
+
+	
 <!--底部块-->
 
 <div class="footer">
@@ -62,6 +103,16 @@
 </div><!--/container-->
 <script src="/Public/js/jquery.min.js"></script>
 <script src="/Public/js/bootstrap.min.js"></script>
-<block name="end"></block>
+
+<script>
+$("document").ready(function(){
+    initial();
+  })
+
+  function initial(){
+    $("#navbar li#?").addClass("active");
+  }
+</script>
+
 </body>	
 </html>

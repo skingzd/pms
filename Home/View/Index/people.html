@@ -1,14 +1,24 @@
 <extend name="Public:base" />
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>test</title>
+  <base href="/"></base>
+  <link href="/Public/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/Public/css/pms.css" rel="stylesheet">
+  <block name="head"></block>
+</head>
+<body>
+<div class="container">
+
 <block name="content" >
-  <div class="container-fluid">
-    <div class="row title-row">
-      <div class="col-xs-12 col-md-6">
-        <span class="summary-graph hidden-xs"></span>
-      </div>
-      <div class="col-xs-12 col-md-6 summary-text">
-        人员信息总览
-      </div>
-    </div><!-- /title row -->
+
+<div class="page-header summary-title">
+  人员信息总览
+</div>
 
     <div class="row summary">
       <div class="col-sm-6 col-md-4">
@@ -64,3 +74,19 @@
     </div><!-- /summary row -->
   </div><!--/container-fluid-->
 </block>
+
+</div><!--/container-->
+<script src="/ublic/js/jquery.min.js"></script>
+<script src="/Public/js/bootstrap.min.js"></script>
+<block name="end">
+  <script type="text/javascript">
+  $("document").ready(function(){
+    initial();
+  })
+  function initial(){
+    $("#navbar li#people").addClass("active");
+  }
+</script>
+</block>
+</body> 
+</html>

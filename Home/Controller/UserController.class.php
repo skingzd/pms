@@ -6,7 +6,6 @@ class UserController extends Controller{
 	public function index(){
 		if(!session('user')) $this->redirect('User/login',null,2,'即将转到登陆界面...');
 		$this->show('用户控制页面');
-		$this->success('修改成功','User/all');
 	}
 
 	public function checkLevel($level = 1){
@@ -14,6 +13,7 @@ class UserController extends Controller{
 		if(!isset($user)) $this->redirect('User/login');
 		$result = M('User')->field('u_level')->where("u_name='%s'",$user)->find();
 		if($result['u_level'] < $level) $this->error('无权访问');
+		$this->assign("user",$user);
 		return $data['u_level'];
 	}
 
