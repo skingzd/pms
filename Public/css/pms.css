@@ -1,0 +1,130 @@
+body{
+  background-image:url('../image/top_bg.jpg');
+  background-repeat: repeat-x;
+}
+a:link{
+  color: #3c3c3c
+}
+a:visited{
+  color: #343434;
+}
+.nav .active a{
+  font-weight: 700;
+  color:#fff !important;
+  background-color: #888888 !important;
+}
+.content-min-height{
+  min-height: 550px;
+}
+.top-status{
+  margin: 0;
+  padding: 0;
+  text-align: right;
+
+}
+.top-status .status-bar{
+  display: inline-block;
+  padding:2px 10px;  
+  position: relative; 
+  right: 15px; 
+  top: 5px;
+  height: 30px;
+  border: 1px solid gray; 
+  border-radius: 5px;
+  background: #B2B2B2;
+  color:#fff;
+}
+.top-status .logo{
+  display: inline-block;
+  position: relative;
+  top:4px;
+  margin: 0 15px 0 0;
+  width: 30px;
+  height: 18px;
+  background: url('../image/status_logo.png') no-repeat;
+}
+
+.top-search {
+  padding: 40px;
+  height: 100px;
+  text-align: center;
+}
+.top-search input{/*搜索框样式*/
+  display: inline;
+  width: 450px;
+  border-radius:10px;
+}
+@media (max-width: 767px) {/*小窗口时搜索框自动宽度*/
+  .top-search input {
+    width: 100% !important;
+  }
+}
+.top-search input:hover{
+  box-shadow: 0 0 10px #A9A8A8;
+}
+
+.navbar-header .logo{
+  float: left;
+  position: relative;
+  top:6px;
+  width: 122px;
+  height: 38px;
+  background: url('../image/nav_logo.png') no-repeat;
+}
+.navbar-header .brand{
+  float: left;
+  padding: 18px 0 0 10px;
+  color:#898989;
+  font-size: 10px;
+  text-transform: uppercase;
+}
+.footer{
+  width: 100%;
+  height: 60px;
+  background: #6b6b6b;
+}
+.footer .footer-bar{
+  color:#D8D8D8;
+  padding: 0;
+  vertical-align: middle;
+}
+.footer .logo{
+  display: inline-block;
+  position: relative;
+  top:12px;
+  width: 93px;
+  height: 37px;
+  margin: 0 20px;
+  background:url('../image/footer_logo.png') no-repeat;
+}
+/*.summary-graph{
+  display: block;
+  width: 365px;
+  height: 184px;
+  background: url('../image/summary_graph.png') no-repeat;
+}*/
+.summary-title{
+  padding: 30px;
+  text-align: left;
+  font-size: 40px;  
+  color: #828282;
+}
+.title-row{
+  margin: 30px 0;
+}
+.summary{
+  padding: 0 40px;
+  margin: 50px 0;
+}
+.summary .col-md-12{/*统计表格中有内容单元*/
+  padding: 30px 0;
+  text-align: center;
+  font-size: 20px;
+  color: #868686;
+}
+.summary-header{/*统计表格中表头*/
+  padding: 15px 0 !important;
+  border-bottom: 1px solid #B8B8B8;
+  font-weight: 800;
+  font-family: '黑体';
+}

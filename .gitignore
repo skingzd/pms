@@ -1,0 +1,13 @@
+#Folder
+/phpMyAdmin/
+/study/
+/ThinkPHP/
+/pms/Runtime/
+
+
+#root folder files
+/.htaccess
+/composer.json
+/inc.php
+/lib.php
+/p.php
