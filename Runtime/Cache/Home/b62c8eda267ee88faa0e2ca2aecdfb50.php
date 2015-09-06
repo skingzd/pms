@@ -230,7 +230,7 @@ tr{
 	</form>
 
 	<table class="table table-striped table-hover">
-	<caption><h4 id="pListTitle"> </h4><small id="subTitle"></small></caption>
+	<caption><h3 id="pListTitle">搜索结果 <small id="subTitle"> 共找到 <?php echo ((isset($resultCount) && ($resultCount !== ""))?($resultCount):"0"); ?> 人复合条件.</small></h4></caption>
 	<thead>
 	  <tr>
 	    <th scope="row">#</th>
@@ -310,6 +310,7 @@ function initial(){
   $("tr").click(function(){
   	alert($(this).attr("id"));
   })
+  if(map == "") $("table").hide();
   setChecked();
 }
 </script>
