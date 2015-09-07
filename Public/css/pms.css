@@ -14,8 +14,50 @@ a:visited{
   background-color: #888888 !important;
 }
 .content-min-height{
-  min-height: 550px;
+  min-height: 500px;
 }
+
+@keyframes loading
+{
+  from {transform: rotate(359deg);}
+  to {transform: rotate(1deg);}
+}
+@-moz-keyframes loading /* Firefox */
+{
+  from {transform: rotate(359deg);}
+  to {transform: rotate(1deg);}
+}
+
+@-webkit-keyframes loading /* Safari 和 Chrome */
+{
+  from {transform: rotate(359deg);}
+  to {transform: rotate(1deg);}
+}
+
+@-o-keyframes loading /* Opera */
+{
+  from {transform: rotate(359deg);}
+  to {transform: rotate(1deg);}
+}
+
+.loading{
+  display: block;
+  z-index: 9;
+  position: fixed;
+  right:10px;
+  top:10px;
+  margin: 0;
+  padding: 0;
+  width: 40px;
+  height: 40px;
+  background: url("/Public/image/loading_m.png") no-repeat;
+}
+
+.loading img{
+        animation:loading 3s linear infinite;
+-webkit-animation:loading 3s linear infinite;
+}
+
 .top-status{
   margin: 0;
   padding: 0;
@@ -45,8 +87,8 @@ a:visited{
 }
 
 .top-search {
-  padding: 40px;
-  height: 100px;
+  padding: 20px;
+  height: 80px;
   text-align: center;
 }
 .top-search input{/*搜索框样式*/

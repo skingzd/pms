@@ -2,7 +2,7 @@
     // 动态加载人员列表框内容
     var subTitle = $("#pListTitle+#subTitle");
     page = typeof(page) == "undefined" ? 1 : page ;//默认第一页
-
+    $("#loading").show();
     $(subTitle).text("加载中...");
     $("#content-right").show();
     $.get("/index.php/Common/getDmP/"+id+"/0/"+page+"/1/",function(p){
@@ -36,12 +36,14 @@
         $("#pList").append(txt);
         $("#"+id).click(id,function(id){
           alert(id.data);
+        $("#loading").hide();
         })
       });
       //输出翻页条
       makePager(id,page,p["resultCount"]);
     });
     $("#pListTitle").text(dmList[id]["name"]);
+    
   }
   function makePager (id,page,resultCount) {
     // 清除页数列表
@@ -103,6 +105,7 @@
   function dmListLoadFrom(id){
     //动态加载单位列表
     var dm,key,txt;
+    $("#loading").show();
     $("#dmList").empty().text("加载中...");
     $.get("/index.php/Common/getDm/"+id+"/1/1",function(dm){
       $("#dmList").empty();
@@ -114,9 +117,11 @@
               .attr("href","#top")
               .click(key,function(k){goToDm(k.data)});
         $("#dmList").append(txt);
+        $("#loading").hide();
       }
       // 更新单位列表
       dmList = dm;
+      
     });    
   }
 
@@ -128,6 +133,7 @@
 
   function goToDm(id){
     var lastPath,lastId,txt,isParent;
+    $("#loading").show();
     lastPath = $("#dmPath>li:last");
     lastId = $(lastPath).attr("id");
     if(typeof(dmList[id]) != "undefined") isParent = dmList[id]["is_parent"];

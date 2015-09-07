@@ -12,6 +12,12 @@ function makePager (nowPage,resultCount) {
 
     page.max = parseInt(page.resultCount/page.per);
     if(page.max*page.per < page.resultCount) page.max = parseInt(page.max)+1;
+    //如果没有记录则隐藏pager
+    if(page.max == 0){
+      $("#pager").hide();
+    }else{
+      $("#pager").show();
+    }
 
     //清除工作
     $("#pager li").unbind("click");
@@ -44,11 +50,6 @@ function makePager (nowPage,resultCount) {
       $("#next").addClass("disabled");
     }else{
       $("#next").click(page.next, function(p){ submitSearch(p.data); });
-    }
-    if(page.max == 0){
-      $("#pager").hide();
-    }else{
-      $("#pager").show();
     }
 }
 

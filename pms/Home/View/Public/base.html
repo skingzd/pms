@@ -10,6 +10,9 @@
   <block name="head"></block>
 </head>
 <body>
+<div class="loading" id="loading">
+  <img src="/Public/image/loading.png" />
+</div>
 <div class="container">
 <!--顶部块 tp模版用-->
 <div class="header" id="header">
@@ -62,6 +65,14 @@
 </div><!--/container-->
 <script src="/Public/js/jquery.min.js"></script>
 <script src="/Public/js/bootstrap.min.js"></script>
-<block name="end"></block>
+<script>
+  $("document").ready(function(){
+    $("#loading").hide();
+    initial();    
+ })
+</script>
+<block name="end">
+
+</block>
 </body>	
 </html>
