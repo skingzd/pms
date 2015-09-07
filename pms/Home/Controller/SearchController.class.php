@@ -3,7 +3,7 @@ namespace Home\Controller;
 use Think\Controller;
 Class SearchController extends Controller{
 	public function index (){
-		
+		A("User")->checkLevel();
 		//不关三七二十一，导入所有可能参数成为查询条件
 		$i = I("get.");
 		$page                     = $i['page'];
