@@ -1,18 +1,12 @@
     function pListLoadFrom(id,page){
     // 动态加载人员列表框内容
-    var subTitle = $("#pListTitle+#subTitle");
     page = typeof(page) == "undefined" ? 1 : page ;//默认第一页
     $("#loading").show();
-    $(subTitle).text("加载中...");
+    $("#subTitle").text("加载中...");
     $("#content-right").show();
+    $("#pList").empty();
     $.get("/index.php/Common/getDmP/"+id+"/0/"+page+"/1/",function(p){
       if(typeof(p['_msg']) != "undefined") $(subTitle).text(p['_msg']);
-
-      $(subTitle).text("共"+p["resultCount"]+"人");
-
-      $("#pList").empty();
-      
-
       $(p["result"]).each(function(i){
         var no,id,name,sex,birthday,date_startwork,post,post_level,txt;
         no        =   (page-1)*perPage+i+1;
@@ -36,11 +30,12 @@
         $("#pList").append(txt);
         $("#"+id).click(id,function(id){
           alert(id.data);
-        $("#loading").hide();
         })
       });
       //输出翻页条
       makePager(id,page,p["resultCount"]);
+      $("#subTitle").text("共"+p["resultCount"]+"人");
+      checkLoading(); //检查是否全部加载结束判断是否隐藏loading
     });
     $("#pListTitle").text(dmList[id]["name"]);
     
@@ -117,11 +112,11 @@
               .attr("href","#top")
               .click(key,function(k){goToDm(k.data)});
         $("#dmList").append(txt);
-        $("#loading").hide();
+        
       }
       // 更新单位列表
       dmList = dm;
-      
+      checkLoading(); //检查是否全部加载结束判断是否隐藏loading
     });    
   }
 
@@ -157,4 +152,9 @@
       $("#dmList>a#"+id).addClass("active");
       pListLoadFrom(id);
     }
+
+  }
+
+  function checkLoading(){
+    if(($("#subTitle").text() != "加载中...") && ($("#dmList").text() !="加载中...")) $("#loading").hide();
   }

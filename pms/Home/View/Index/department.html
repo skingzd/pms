@@ -127,12 +127,12 @@
   var dmList,perPage=3;
 
   function initial(){
-    var txt,rootDm;
-    $("#dmPath").text("加载中...");
-    $.get("/index.php/Common/getDm/0/0/1",function(rootDm){
-      txt = $("<li></li>").text(rootDm["name"]).attr("id",0).addClass("active");
-      $("#dmPath").empty().append(txt);
-    });
+    var txt,rootDm = {$rootDm};
+    // $("#dmPath").text("加载中...");
+    // $.get("/index.php/Common/getDm/0/0/1",function(rootDm){
+    txt = $("<li></li>").text(rootDm["name"]).attr("id",0).addClass("active");
+    $("#dmPath").empty().append(txt);
+    // });
     dmListLoadFrom(0);
     $("#navbar li#department").addClass("active");
     $("#content-right").hide();
@@ -141,7 +141,7 @@
     })
   }
   </script>
-  <script src="/Public/js/dm.js"></script>
+  <script src="/Public/js/pms_dm.js"></script>
 </block> <!-- /block end -->
 </body>
 </html>

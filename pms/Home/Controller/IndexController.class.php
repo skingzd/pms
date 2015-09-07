@@ -87,6 +87,8 @@ class IndexController extends Controller {
 
     public function department(){
         A('User')->checkLevel();
+        $rootDm = A('Common')->getDm(0,0,0);
+        $this->assign("rootDm",json_encode($rootDm));
         $this->display();
     }
 
