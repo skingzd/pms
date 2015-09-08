@@ -18,7 +18,13 @@
 <div class="header" id="header">
   <!-- 顶部登录、用户状态框 -->
   <div class="top-status">
-    <div class="status-bar"><span class="logo"></span>欢迎 <a href="/index.php/User/index.html">{$user}</a>. 退出登录</div>
+  <if condition="$user neq '' " >
+    <div class="status-bar">
+      <span class="logo"></span>
+      {$user} : <a href="/index.php/User/index.html">控制面板</a> 
+      <a href="/index.php/User/logout.html">退出登录</a>
+    </div>
+  </if>
   </div>
   <!-- 搜索框 -->
   <div class="top-search">

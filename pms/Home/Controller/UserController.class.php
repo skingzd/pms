@@ -5,7 +5,8 @@ class UserController extends Controller{
 
 	public function index(){
 		if(!session('user')) $this->redirect('User/login',null,2,'即将转到登陆界面...');
-		$this->show('用户控制页面');
+		// $this->show('用户控制页面');
+		$this->display();
 	}
 
 	public function checkLevel($level = 1){
@@ -18,29 +19,33 @@ class UserController extends Controller{
 	}
 
 	public function login(){
-		if(!IS_POST)echo '用户登录窗口';//无post数据则显示登录框
-		if(session('?user')) $this->redirect('Index/index');//防止重复登录
-		$name = I('post.username',fasle);
-		$pwd  = I('post.password',false);
-		//测试
-		$name = 'admin';
-		$pwd  = '123456';
+		// if(session('?user')) $this->redirect('Index/index');//防止重复登录
+		if(!IS_POST){//无post数据则显示登录框
+			$this->display();
+			return false;
+		}else{
+			$name = I('post.name',fasle);
+			$pwd  = I('post.pwd',false);
 
-		$u   = M('User');
-		$pwd = md5($pwd);
-		$where['u_name'] = $name;
-		$user = $u->where($where)->find();
-		if(!$user) $this->error('用户不存在');
-		if( $pwd !== $user['u_pwd'] ) $this->error('密码错误');
+			$u   = M('User');
+			$pwd = md5($pwd);
+			$where['u_name'] = $name;
+			$user = $u->where($where)->find();
+			// dump($name,$pwd);
+			if(!$user) $this->error('用户不存在');
+			if( $pwd !== $user['u_pwd'] ) $this->error('密码错误');
 
-		$result = $u->where($where)->setField('time_last_login',time());
-		if(!$result) $this->error('登录失败');
-		session('user',$user['u_name']);
-		$this->redirect('Index/index');
+			$result = $u->where($where)->setField('time_last_login',time());
+			if(!$result) $this->error('登录失败');
+			session('user',$user['u_name']);
+			$this->redirect('Index/index');
+		}
+		
 	}
 
 	public function logout(){
 		session('user',null);
+		$this->checkLevel();
 	}
 
 	public function changePwd(){

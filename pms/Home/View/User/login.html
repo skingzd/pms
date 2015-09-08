@@ -1,0 +1,65 @@
+<extend name="Public:base" />
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PMS</title>
+  <link href="/Public/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/Public/css/pms.css" rel="stylesheet">
+<block name="head">
+<style>
+button{
+  margin: 30px 0;
+}
+form{
+  margin:60px auto;
+}
+</style>
+</block>
+</head>
+<body>
+<div class="container">
+<block name="content">
+<div class="content-min-height">
+<div class="row">
+  <div class="col-sm-3"></div>
+    <div class="col-sm-7">
+      <form class="form-horizontal" action="" method="post">
+
+        <div class="form-group">
+          <label for="name" class="col-sm-3">用户名：</label>
+          <div class="col-sm-6">
+            <input type="text" name="name" class="form-control" required="required" value="Admin">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="pwd" class="col-sm-3">密码：</label>
+          <div class="col-sm-6">
+            <input type="password" name="pwd" class="form-control" required="required" value="123456">
+          </div>
+        </div>
+        <button class="btn btn-default col-sm-9" type="submit">登录</button>
+      </form>
+    </div>
+    <div class="col-sm-2"></div>
+</div> <!-- /row -->
+</div>
+</block>
+</div><!--/container-->
+<script src="/Public/js/jquery.min.js"></script>
+<script src="/Public/js/bootstrap.min.js"></script>
+<block name="end">
+<script>
+  function initial(){
+    // $("#navbar li#?").addClass("active");
+    $("a").attr('href', 'javascript:void(0);');
+    $(".top-search>input").attr('disabled','disabled');
+    $("#navbar li").addClass("disabled")
+  }
+</script>
+</block>
+</body> 
+</html>

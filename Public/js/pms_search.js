@@ -1,64 +1,3 @@
-function makePager(nowPage, resultCount) {
-  // 清除页数列表
-  var i, li, a;
-  page = {
-    "pre": nowPage - 1,
-    "now": nowPage,
-    "next": nowPage + 1,
-    "per": perPage,
-    "max": null,
-    "resultCount": resultCount,
-  };
-
-  page.max = parseInt(page.resultCount / page.per);
-  if (page.max * page.per < page.resultCount) page.max = parseInt(page.max) + 1;
-  //如果没有记录则隐藏pager
-  if (page.max == 0) {
-    $("#pager").hide();
-  } else {
-    $("#pager").show();
-  }
-
-  //清除工作
-  $("#pager li").unbind("click");
-  $("#pager li").removeClass();
-  while ($("#pre+").attr("id") != "next") {
-    $("#pre+").remove();
-  }
-
-  //上一页按钮
-  if (page.now <= 1) { //是第一页则禁用上一页
-    $("#pre").addClass("disabled");
-  } else { //不是第一页则设定上一页按钮页码-1
-    $("#pre").click(page.pre, function(p) {
-      submitSearch(p.data);
-    });
-  }
-
-  // 页面按钮
-  for (i = 1; i <= page.max; i++) {
-    li = $("<li></li>");
-    a = $("<a></a>").text(i);
-    if (i == page.now) {
-      $(li).addClass("active");
-    } else {
-      $(li).click(i, function(p) {
-        submitSearch(p.data);
-      });
-    }
-    li = $(li).append(a);
-    $("#next").before(li);
-  }
-  // 下一页按钮123
-  if (page.next >= page.max) { //如果是最后一页
-    $("#next").addClass("disabled");
-  } else {
-    $("#next").click(page.next, function(p) {
-      submitSearch(p.data);
-    });
-  }
-}
-
 function setChecked() {
 
   if (cr(map, "name")) {
@@ -121,7 +60,7 @@ function cr(m, rule) { //short for check rule
   return true;
 }
 
-function submitSearch(page) {
-  $("#page").attr("value", page);
+function goPage(e){
+  $("#page").attr("value", e.data.to);
   $("#searchForm").submit();
 }

@@ -1,0 +1,93 @@
+<extend name="Public:base" />
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>PMS</title>
+	<link href="/Public/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/Public/css/pms.css" rel="stylesheet">
+<block name="head">
+<style>
+
+</style>
+</block>
+</head>
+<body>
+<div class="container">
+<block name="content">
+<div class="content-min-height">
+	<div class="row">
+		<div class="col-sm-3 col-md-2">
+			<ul class="list-group" id="panelNav">
+				<a class="list-group-item" href="#"><span class="glyphicon glyphicon-pencil"></span> 修改密码</a>
+				<a class="list-group-item" href="#"><span class="glyphicon glyphicon-cog"></span> 修改级别</a>
+				<a class="list-group-item" href="#"><span class="glyphicon glyphicon-plus"></span> 添加用户</a>
+				<a class="list-group-item" href="#"><span class="glyphicon glyphicon-list-alt"></span> 编辑部门</a>
+				<a class="list-group-item" href="#"><span class="glyphicon glyphicon-log-out"></span> 退出登录</a>
+			</ul>
+		</div>
+		<div class="col-sm-9 col-md-10">
+<!-- 修改密码面板 -->
+<div class="panel panel-default" id="panelChangePwd" style="display:block;">
+  <div class="panel-heading">修改登录密码</div>
+  <div class="panel-body">
+  	<form  class="form-horizontal">
+  		<div class="form-group">
+  			<label class="col-sm-3" for="originPwd">原始密码：</label>
+		    <div class="col-sm-6">
+		    	<input class="form-control" type="password" name="originPwd" id="originPwd" required="required">
+		    </div>
+  		</div>
+
+    	<div class="form-group">
+  			<label class="col-sm-3" for="originPwd">新密码：</label>
+		    <div class="col-sm-6">
+		    	<input class="form-control" type="password" name="newPwd" id="newPwd" required="required">
+		    </div>
+  		</div>
+
+  		<div class="form-group">
+  			<label class="col-sm-3" for="originPwd">重复新密码：</label>
+		    <div class="col-sm-6">
+		    	<input class="form-control" type="password" name="reNewPwd" id="reNewPwd" required="required">
+		    </div>
+  		</div>
+  		<br/>
+  			<button class="btn btn-default">确认修改</button>
+  	</form>
+  </div>
+</div>
+
+修改用户级别面板
+<div class="panel panel-default" id="panelChangeLevel">
+  <div class="panel-heading">修改登录密码</div>
+  <div class="panel-body">
+  	<form  class="form-horizontal">
+
+  	</form>
+  </div>
+</div>
+
+		</div>
+	</div>
+</div>
+</block>
+</div><!--/container-->
+<script src="/Public/js/jquery.min.js"></script>
+<script src="/Public/js/bootstrap.min.js"></script>
+
+<block name="end">
+<script>
+  function initial(){
+    // $("#navbar li#?").addClass("active");
+    $("ul#panelNav>a").click(function(){//设置左侧控制导航点击样式
+    	$("ul#panelNav>a").removeClass("active");
+    	$(this).addClass("active");
+    })
+  }
+</script>
+</block>
+</body>	
+</html>

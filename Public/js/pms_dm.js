@@ -1,5 +1,6 @@
 function pListLoadFrom(id, page) {
   // 动态加载人员列表框内容
+  if($("#subTitle").text() == "加载中...") return false;
   page = typeof(page) == "undefined" ? 1 : page; //默认第一页
   $("#loading").show();
   $("#subTitle").text("加载中...");
@@ -33,84 +34,12 @@ function pListLoadFrom(id, page) {
       })
     });
     //输出翻页条
-    makePager(id, page, p["resultCount"]);
+    makePager("pager", page, p["resultCount"], perPage, goPage, id);
     $("#subTitle").text("共" + p["resultCount"] + "人");
     checkLoading(); //检查是否全部加载结束判断是否隐藏loading
   });
   $("#pListTitle").text(dmList[id]["name"]);
 
-}
-
-function makePager(id, page, resultCount) {
-  // 清除页数列表
-  var i, li, a;
-  page = {
-    "pre": page - 1,
-    "now": page,
-    "next": page + 1,
-    "per": perPage,
-    "max": null,
-    "dmId": null,
-    "resultCount": resultCount,
-  };
-  page.dmId = parseInt(id);
-  page.max = parseInt(page.resultCount / page.per);
-  if (page.max * page.per < page.resultCount) page.max = parseInt(page.max) + 1;
-
-  //清除工作
-  $("#pager li").unbind("click");
-  $("#pager li").removeClass();
-  while ($("#pre+").attr("id") != "next") {
-    $("#pre+").remove();
-  }
-
-  //上一页按钮
-  if (page.now == 1) { //是第一页则禁用上一页
-    $("#pre").addClass("disabled");
-  } else { //不是第一页则设定上一页按钮页码-1
-    $("#pre").click({
-      "dm": page.dmId,
-      "to": page.pre
-    }, function(p) {
-      pListLoadFrom(p.data.dm, p.data.to);
-    });
-  }
-
-  // 页面按钮
-  for (i = 1; i <= page.max; i++) {
-    li = $("<li></li>");
-    a = $("<a></a>").text(i);
-    if (i == page.now) {
-      $(li).addClass("active");
-    } else {
-      $(li).click({
-        "dm": page.dmId,
-        "to": i
-      }, function(p) {
-        pListLoadFrom(p.data.dm, p.data.to);
-      });
-    }
-    li = $(li).append(a);
-    $("#next").before(li);
-  }
-  // 下一页按钮123
-  if (page.next > page.max) { //如果是最后一页
-    $("#next").addClass("disabled");
-  } else {
-    $("#next").click({
-      "dm": page.dmId,
-      "to": page.next
-    }, function(p) {
-      pListLoadFrom(p.data.dm, p.data.to);
-    });
-  }
-  if (page.max == 0) {
-    $("#pager").hide();
-  } else {
-    $("#pager").show();
-  }
-
-  // $("#pre").append(function(){})
 }
 
 function dmListLoadFrom(id) {
@@ -177,4 +106,10 @@ function goToDm(id) {
 
 function checkLoading() {
   if (($("#subTitle").text() != "加载中...") && ($("#dmList").text() != "加载中..."))$("#loading").hide();
+}
+
+function goPage(e){
+  alert(e.data.addsOn);
+  alert(e.data.to);
+  pListLoadFrom(e.data.addsOn,e.data.to);
 }
