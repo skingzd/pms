@@ -176,5 +176,5 @@ function goToDm(id) {
 }
 
 function checkLoading() {
-  if (($("#subTitle").text() != "加载中...") && ($("#dmList").text() != "加载中...")) $("#loading").hide();
+  if (($("#subTitle").text() != "加载中...") && ($("#dmList").text() != "加载中..."))$("#loading").hide();
 }
