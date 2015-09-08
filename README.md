@@ -38,7 +38,7 @@
 -	[changeLevel] 修改用户权限 *
 
 ###高级搜索 [ADVSEARCH CONTROLLER]
->	路由绑定到 AdvSearch.php 作为index入口
+>	Search控制器实现按条件筛选
 
 - 进行组合条件复杂查询
 =======
