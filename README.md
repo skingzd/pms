@@ -14,28 +14,15 @@
 -	[edit] 人员基本信息变更
 -	[changeId] 身份证号码修改 *
 
-###学历信息管理 [EDUCATION CONTROLLER]
--	[index] 显示学历总览
--	[addNew] 增加新学历
--	[edit] 修改学历信息
--	[search] 查询个人学历
 
-###人事变动管理 [TRANSFER CONTROLLER]
--	人员变动记录查询
--	记录人事变动
--	修改人事变动记录
 
-###职称管理 [TITLE CONTROLLER]
--	查询职称情况
--	添加职称获得情况
--	修改职称信息
-
-###多用户功能实现 [USER CONTROLLER]
+###用户控制面板 [USER CONTROLLER]
 -	[checkLevel] 检测当前登录用户权限
 -	[login] 用户登录功能
 -	[changePwd] 修改用户密码
 -	[addNew] 添加新用户 *
 -	[changeLevel] 修改用户权限 *
+-   [departmentM] 管理部门
 
 ###高级搜索 [ADVSEARCH CONTROLLER]
 >	Search控制器实现按条件筛选

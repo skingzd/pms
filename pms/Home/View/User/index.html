@@ -10,6 +10,37 @@
 	<link href="/Public/css/pms.css" rel="stylesheet">
 <block name="head">
 <style>
+.dmSelector{
+	margin: 10px;
+	list-style-type : none;
+}
+.dmSelector li>i{
+	display: inline-block;
+	margin: 0 3px;
+	width: 1.2em;
+	height: 1.1em;
+	background-image:url("/Public/image/tree.png");
+	background-position: 0 38px;
+
+}
+.dmSelector li{
+	list-style-type : none;
+}
+.dmSelector ul{
+	padding:0 0 0 20px;
+}
+.dmSelector li.open > i{
+	background-position: 20px 19px ;
+}
+
+.dmSelector li.closed > i{
+	background-position: -20px 38px;
+
+}
+.dmSelector ul > li:last-child > i{
+	background-position: 0 20px;
+}
+
 
 </style>
 </block>
@@ -21,16 +52,15 @@
 	<div class="row">
 		<div class="col-sm-3 col-md-2">
 			<ul class="list-group" id="panelNav">
-				<a class="list-group-item" href="#"><span class="glyphicon glyphicon-pencil"></span> 修改密码</a>
-				<a class="list-group-item" href="#"><span class="glyphicon glyphicon-cog"></span> 修改级别</a>
-				<a class="list-group-item" href="#"><span class="glyphicon glyphicon-plus"></span> 添加用户</a>
-				<a class="list-group-item" href="#"><span class="glyphicon glyphicon-list-alt"></span> 编辑部门</a>
-				<a class="list-group-item" href="#"><span class="glyphicon glyphicon-log-out"></span> 退出登录</a>
+				<a class="list-group-item" href="javascript:goPanel('ChangePwd')"><span class="glyphicon glyphicon-pencil"></span> 修改密码</a>
+				<a class="list-group-item" href="javascript:goPanel('ManageUser')"><span class="glyphicon glyphicon-cog"></span> 用户管理</a>
+				<a class="list-group-item" href="javascript:goPanel('ManageDm')"><span class="glyphicon glyphicon-list-alt"></span> 部门管理</a>
+				<a class="list-group-item" href="logout.html"><span class="glyphicon glyphicon-log-out"></span> 退出登录</a>
 			</ul>
 		</div>
 		<div class="col-sm-9 col-md-10">
 <!-- 修改密码面板 -->
-<div class="panel panel-default" id="panelChangePwd" style="display:block;">
+<div class="panel panel-default" id="panelChangePwd" style="display:none;">
   <div class="panel-heading">修改登录密码</div>
   <div class="panel-body">
   	<form  class="form-horizontal">
@@ -60,15 +90,89 @@
   </div>
 </div>
 
-修改用户级别面板
-<div class="panel panel-default" id="panelChangeLevel">
-  <div class="panel-heading">修改登录密码</div>
+<!-- 用户管理 -->
+<div class="panel panel-default" id="panelManageUser" style="display:none;">
+  <div class="panel-heading">用户管理</div>
   <div class="panel-body">
   	<form  class="form-horizontal">
 
   	</form>
   </div>
 </div>
+
+
+<!-- 部门管理 -->
+<div class="panel panel-default" id="panelManageDm" style="display:none;">
+  <div class="panel-heading">部门管理</div>
+  <div class="panel-body">
+  	<form  class="form-horizontal">
+		<button class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#selectorModal">选择部门</button>
+
+		<input type="hidden" name="dmId" id="dmId" value="">
+
+		<label for="dmName">部门名称</label>
+		<input type="text" class="form-control" name="dmName" id="dmName" valu="">
+
+		<label for="dateSetup">成立时间</label>
+		<input type="date" class="form-control" name="dateSetup" id="dateSetup" valu="">
+
+		<label for="fileSetup">成立文号</label>
+		<input type="date" class="form-control" name="fileSetup" id="fileSetup" valu="">
+  	</form>
+  </div>
+
+	<!-- Modal -->
+	<div class="modal fade" id="selectorModal" tabindex="-1" role="dialog" aria-labelledby="dmSelector">
+	  <div class="modal-dialog" role="document">
+	    <div class="modal-content">
+	      <div class="modal-header">
+	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+	        <h3 class="modal-title" id="dmSelector">部门选择</h4>
+	      </div>
+	      <div class="modal-body dmSelector" >
+					<!-- 部门选择其输出位置 -->
+	      </div>
+	      <div class="modal-footer">
+	      	<input type="hidden" id="dmId" value=""/>
+	      	<input type="hidden" id="dmName" value=""/>
+	      	<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+	        <button type="button" class="btn btn-primary">选择该部门</button>
+	      </div>
+	    </div>
+	  </div>
+	</div>
+</div> <!-- /.panelManageDm -->
+
+<div class="dmSelector">
+	<div>
+		四矿
+		<ul>
+			<li>
+					<i></i><a href="#">机关</a>
+			</li>
+			<li class="closed">
+					<i></i><a href="#">采煤系统</a>
+			</li>
+			<li class="open">
+					<i></i><a href="#">采煤系统</a>
+
+					<ul>
+						<li>
+								<i></i><a href="#">机关</a>
+						</li>
+						<li>
+								<i></i><a href="#">采煤系统</a>
+						</li>
+						<li>
+								<i></i><a href="#">采煤系统</a>
+						</li>
+					</ul>
+			</li>
+		</ul>
+	</div>
+</div>
+
+
 
 		</div>
 	</div>
@@ -82,12 +186,16 @@
 <script>
   function initial(){
     // $("#navbar li#?").addClass("active");
-    $("ul#panelNav>a").click(function(){//设置左侧控制导航点击样式
+    //设置左侧导航条点击样式
+    $("ul#panelNav>a").click(function(){
     	$("ul#panelNav>a").removeClass("active");
     	$(this).addClass("active");
     })
+    // listRoot();
   }
 </script>
+<script src="/Public/js/pms_user.js"></script>
+<script src="/Public/js/pms_dm_selecter.js"></script>
 </block>
 </body>	
 </html>

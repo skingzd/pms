@@ -106,8 +106,8 @@ Class CommonController extends Controller{
 						->where($where)
 						->select();
 			foreach ($result as $value){
-				$dm[$value['dm_id']]['name'] = $value['dm_name'];
-				$dm[$value['dm_id']]['is_parent'] = $value['is_parent'];
+				$dm[$value['dm_id']]['n'] = $value['dm_name'];
+				$dm[$value['dm_id']]['is_p'] = $value['is_parent'];
 			}
 		}else{
 			//返回单个dm_id => dm_name
@@ -116,8 +116,8 @@ Class CommonController extends Controller{
 					->field('dm_id,dm_name,is_parent,date_dm_setup,comment')
 					->where($where)
 					->find();
-			$dm["name"] = $result["dm_name"];
-			$dm["is_parent"] = $result["is_parent"];
+			$dm["n"] = $result["dm_name"];
+			$dm["is_p"] = $result["is_parent"];
 			$dm["date_setup"] = $result["date_setup"];
 			$dm["comment"] = $result["comment"];
 		}
@@ -157,7 +157,7 @@ Class CommonController extends Controller{
 		return $data;
 	}
 
-	public function getDmTree($byId = 0){
+	public function getDmTree($byId = 0, $ajax = false){
 		$d = M('Department');
 		$where['status'] = 1;
 		$dm = $d
@@ -173,15 +173,18 @@ Class CommonController extends Controller{
 			foreach ($idParent as $dmId => $byParent) {
 				//如果当前记录上级部门为$id
 				if($id == $byParent){
-					$dmTree[$dmId]['name'] = $idName[$dmId];
+					$dmTree[$dmId]['n'] = $idName[$dmId];//dmName
 					if(array_search($dmId, $idParent)){
-						$dmTree[$dmId]['child'] = $buildTree($dmId);
+						$dmTree[$dmId]['c'] = $buildTree($dmId);//dm's child list
 					}
 				}
 			}
 			if(isset($dmTree)) return $dmTree;
 			return false;
 		};
+		// dump($buildTree($byId));
+		// dump(json_encode($buildTree($byId)));
+		if($ajax) $this->ajaxReturn($buildTree($byId));
 		return $buildTree($byId);
 	}
 

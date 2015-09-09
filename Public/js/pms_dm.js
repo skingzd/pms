@@ -29,17 +29,16 @@ function pListLoadFrom(id, page) {
       txt += "<td>" + postLevel + "</td>";
       txt += "</tr>";
       $("#pList").append(txt);
-      $("#" + id).click(id, function(id) {
-        alert(id.data);
-      })
     });
     //输出翻页条
     makePager("pager", page, p["resultCount"], perPage, goPage, id);
     $("#subTitle").text("共" + p["resultCount"] + "人");
     checkLoading(); //检查是否全部加载结束判断是否隐藏loading
+    $("tr[id]").click(function() {//实现行点击动作
+      alert($(this).attr('id'));
+    })
   });
-  $("#pListTitle").text(dmList[id]["name"]);
-
+  $("#pListTitle").text(dmList[id]["n"]);
 }
 
 function dmListLoadFrom(id) {
@@ -53,7 +52,7 @@ function dmListLoadFrom(id) {
       txt = $("<a></a>")
         .addClass("list-group-item")
         .attr("id", key)
-        .text(dm[key]['name'])
+        .text(dm[key]['n'])
         .attr("href", "#top")
         .click(key, function(k) {
           goToDm(k.data)
@@ -78,7 +77,7 @@ function goToDm(id) {
   $("#loading").show();
   lastPath = $("#dmPath>li:last");
   lastId = $(lastPath).attr("id");
-  if (typeof(dmList[id]) != "undefined") isParent = dmList[id]["is_parent"];
+  if (typeof(dmList[id]) != "undefined") isParent = dmList[id]["is_p"];
   if (isParent == 1) {
     //移除当前单位样式，恢复点击跳转
     $(lastPath).removeClass().click(lastId, function(n) {
@@ -88,14 +87,14 @@ function goToDm(id) {
     txt = $("<li></li>")
       .addClass('active')
       .attr("id", id)
-      .text(dmList[id]["name"]);
+      .text(dmList[id]["n"]);
     $("#dmPath").append(txt);
 
     dmListLoadFrom(id);
     pListLoadFrom(id);
   } else {
     //不是父部门则更改路径当前位置
-    $(lastPath).attr("id", id).text(dmList[id]["name"]);
+    $(lastPath).attr("id", id).text(dmList[id]["n"]);
     // 去掉当前活动部门样式，设置新部门为活动样式
     $("#dmList>a#" + lastId).removeClass().addClass("list-group-item");
     $("#dmList>a#" + id).addClass("active");
@@ -109,7 +108,7 @@ function checkLoading() {
 }
 
 function goPage(e){
-  alert(e.data.addsOn);
-  alert(e.data.to);
+  // alert(e.data.addsOn);
+  // alert(e.data.to);
   pListLoadFrom(e.data.addsOn,e.data.to);
 }
