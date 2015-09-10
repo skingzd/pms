@@ -274,7 +274,7 @@ $("document").ready(function(){
 function initial(){
   $("#navbar li#search").addClass("active");
   if(resultCount >=0 ) {
-  	makePager("pager", nowPage, resultCount, perPage, goPage, null);
+  	makePager("#pager", nowPage, resultCount, perPage, goPage, null);
 	  $("tr").click(function(){
 	  	alert($(this).attr("id"));
 	  })

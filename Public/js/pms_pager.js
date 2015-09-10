@@ -28,8 +28,8 @@ function makePager(pagerId, nowPage, resultCount, perPage, callFn, addsOn) {
   if (page.max * page.per < page.resultCount) page.max = parseInt(page.max) + 1;
 
   //清除工作
-  $("#"+pagerId+" li").unbind("click");
-  $("#"+pagerId+" li").removeClass();
+  $(pagerId+" li").unbind("click");
+  $(pagerId+" li").removeClass();
   while ($(pager.pre).next().attr("id") != "next") {
     $(pager.pre).next().remove();
   }
@@ -60,9 +60,9 @@ function makePager(pagerId, nowPage, resultCount, perPage, callFn, addsOn) {
     $(pager.next).click({"to":page.next, "addsOn":addsOn},callFn);
   }
   if (page.max == 0) {
-    $("#"+pagerId).hide();
+    $(pagerId).hide();
   } else {
-    $("#"+pagerId).show();
+    $(pagerId).show();
   }
 
   // $("#pre").append(function(){})

@@ -182,9 +182,9 @@ Class CommonController extends Controller{
 			if(isset($dmTree)) return $dmTree;
 			return false;
 		};
-		// dump($buildTree($byId));
 		// dump(json_encode($buildTree($byId)));
 		if($ajax) $this->ajaxReturn($buildTree($byId));
+		// dump($buildTree($byId));
 		return $buildTree($byId);
 	}
 

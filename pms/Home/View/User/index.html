@@ -23,23 +23,37 @@
 	background-position: 0 38px;
 
 }
+.dmSelector ul>i{
+	display: inline-block;
+	margin: 0 3px;
+	width: 1.2em;
+	height: 1.1em;
+	background-image:url("/Public/image/tree.png");
+	background-position: 0 38px;
+
+}
 .dmSelector li{
 	list-style-type : none;
+}
+.dmSelector li:hover{
+	cursor: pointer;
+	background-color: red;
 }
 .dmSelector ul{
 	padding:0 0 0 20px;
 }
-.dmSelector li.open > i{
-	background-position: 20px 19px ;
-}
-
-.dmSelector li.closed > i{
-	background-position: -20px 38px;
-
-}
 .dmSelector ul > li:last-child > i{
 	background-position: 0 20px;
 }
+.dmSelector .open > i{
+	background-position: 20px 19px !important;
+}
+
+.dmSelector .closed > i{
+	background-position: -20px 38px !important;
+
+}
+
 
 
 </style>
@@ -100,7 +114,6 @@
   </div>
 </div>
 
-
 <!-- 部门管理 -->
 <div class="panel panel-default" id="panelManageDm" style="display:none;">
   <div class="panel-heading">部门管理</div>
@@ -127,7 +140,7 @@
 	    <div class="modal-content">
 	      <div class="modal-header">
 	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h3 class="modal-title" id="dmSelector">部门选择</h4>
+	        <h3 class="modal-title" id="dmSelector1">部门选择</h4>
 	      </div>
 	      <div class="modal-body dmSelector" >
 					<!-- 部门选择其输出位置 -->
@@ -143,33 +156,8 @@
 	</div>
 </div> <!-- /.panelManageDm -->
 
-<div class="dmSelector">
-	<div>
-		四矿
-		<ul>
-			<li>
-					<i></i><a href="#">机关</a>
-			</li>
-			<li class="closed">
-					<i></i><a href="#">采煤系统</a>
-			</li>
-			<li class="open">
-					<i></i><a href="#">采煤系统</a>
+<div class="dmSelector" id="dmSelector">
 
-					<ul>
-						<li>
-								<i></i><a href="#">机关</a>
-						</li>
-						<li>
-								<i></i><a href="#">采煤系统</a>
-						</li>
-						<li>
-								<i></i><a href="#">采煤系统</a>
-						</li>
-					</ul>
-			</li>
-		</ul>
-	</div>
 </div>
 
 
@@ -184,6 +172,7 @@
 
 <block name="end">
 <script>
+var dmTree;
   function initial(){
     // $("#navbar li#?").addClass("active");
     //设置左侧导航条点击样式
@@ -191,7 +180,7 @@
     	$("ul#panelNav>a").removeClass("active");
     	$(this).addClass("active");
     })
-    // listRoot();
+    listDm("#dmSelector", 0, "四矿", null);
   }
 </script>
 <script src="/Public/js/pms_user.js"></script>
