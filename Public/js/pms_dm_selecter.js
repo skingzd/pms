@@ -1,7 +1,17 @@
-function listDm(listTo, defaultId, rootName, callFn){
+/**
+ * [listDm description]
+ * @param  {[type]} listTo    [目标容器]
+ * @param  {[type]} defaultId [默认列表目录单位ID]
+ * @param  {[type]} rootName  [默认列表目录单位名]
+ * @param  {[type]} callFn    [每个单位名的回调函数，可选]
+ * @param  {[type]} addsOn    [回调函数第三个参数，可传递，可选]
+ * @return {[type]}           [no return]
+ */
+function listDm(listTo, defaultId, rootName, callFn, addsOn){
 
-	var txt=rootName,li;
+	var txt=rootName;
 	$("#loading").show();
+	$(listTo).empty();
 	$.get('/index.php/Common/getDmTree/'+defaultId+'/1', function(dmTree) {
 
 		buildTree = function(k,v){
@@ -24,9 +34,9 @@ function listDm(listTo, defaultId, rootName, callFn){
 		}); //each
 		txt += "</ul>";
 
-		$(listTo).append(txt);
+		$(listTo).html(txt);
 
-		$("li[class]").click(function(){ 
+		$(listTo+" li[class]").click(function(){ 
 			// $(this).removeClass();
 			if($(this).attr('class') == 'closed'){
 					$(this).attr('class',"open");
@@ -36,6 +46,17 @@ function listDm(listTo, defaultId, rootName, callFn){
 			$(this).next("ul").toggle(300);
 			
 		})
+		if(typeof(callFn) == "function"){
+			//如果附加变量不存在则指定为空
+			if(typeof(addsOn) == "undefined") addsOn = null;
+			$(listTo+" a[href]").click(function(){
+				callFn(
+					$(this).parent("li").attr('id'),
+					$(this).text(),
+					addsOn
+					);
+			});
+		}
 	$("#loading").hide();
 	}); // .get
 }
