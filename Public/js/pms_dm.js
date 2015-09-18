@@ -31,7 +31,7 @@ function pListLoadFrom(id, page) {
       $("#pList").append(txt);
     });
     //输出翻页条
-    makePager("pager", page, p["resultCount"], perPage, goPage, id);
+    makePager("#pager", page, p["resultCount"], perPage, goPage, id);
     $("#subTitle").text("共" + p["resultCount"] + "人");
     checkLoading(); //检查是否全部加载结束判断是否隐藏loading
     $("tr[id]").click(function() {//实现行点击动作

@@ -131,11 +131,12 @@ Class CommonController extends Controller{
 			//返回单个dm_id => dm_name
 			$where['dm_id'] = $id;
 			$result = $d
-					->field('dm_id,dm_name,by_parent,is_parent,date_dm_setup,comment')
+					->field('dm_id,dm_name,is_parent,by_parent,date_dm_setup,comment')
 					->where($where)
 					->find();
 			$dm["n"] = $result["dm_name"];
 			$dm["is_p"] = $result["is_parent"];
+			$dm["by_p"] = $result["by_parent"];
 			$dm["date_setup"] = $result["date_setup"];
 			$dm["comment"] = $result["comment"];
 
@@ -190,6 +191,7 @@ Class CommonController extends Controller{
 		$d = M('Department');
 		$where['status'] = 1;
 		$dm = $d
+		->where($where)
 		->order('dm_sort')
 		->select();
 
@@ -211,9 +213,9 @@ Class CommonController extends Controller{
 			if(isset($dmTree)) return $dmTree;
 			return false;
 		};
-		// dump($buildTree($byId));
 		// dump(json_encode($buildTree($byId)));
 		if($ajax) $this->ajaxReturn($buildTree($byId));
+		// dump($buildTree($byId));
 		return $buildTree($byId);
 	}
 

@@ -1,9 +1,13 @@
 <?php
 namespace Home\Model;
 use Think\Model;
-//定义 单位 类
 class DepartmentModel extends Model{
-
+	protected $_map = array(
+		'id'			=>	'dm_id',
+		'name'			=>	'dm_name',
+		'datesetup'		=>	'date_dm_setup',
+		'c'				=>	'comment',
+		'byp'			=>	'by_parent',
+		);
 }
-
 ?>

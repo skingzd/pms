@@ -15,7 +15,7 @@ class UserController extends Controller{
 		$result = M('User')->field('u_level')->where("u_name='%s'",$user)->find();
 		if($result['u_level'] < $level) $this->error('无权访问');
 		$this->assign("user",$user);
-		return $data['u_level'];
+		return $result['u_level'];
 	}
 
 	public function login(){

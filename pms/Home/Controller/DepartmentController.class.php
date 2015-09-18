@@ -27,7 +27,7 @@ class DepartmentController extends Controller{
 
 	public function addnew(){
 		A('User')->checkLevel(5);
-		$d = M('Department');
+		$d = D('Department');
 		//名称重复性检查
 		$check = $d->where("dm_name='%s'",I('post.dm_name'))->find();
 		if($check) $this->error('单位名称已存在');
@@ -48,21 +48,35 @@ class DepartmentController extends Controller{
 
 	public function edit($id){
 		A('User')->checkLevel(5);
-		$d = M('Department');
-		if(IS_POST){//如果post数据则更新相应记录
-			$where['dm_id'] = $id;
+		if(1){
+			$d = M('Department');
+			//查看是否有子部门
+			
+			$where['by_parent'] = $id;
+			$haveChild = $d->where($where)->find();
+			unset($where);
+
+			//创建数据
+			// if(!$d->create()) $this->ajaxReturn("获取数据失败");
 			$d->create();
+			dump($d);
 			$d->last_edit = session('user');
 			$d->time_last_edit = time();
-
-			$result = $d->where($where)->save();
-			if(!$result) $this->error('编辑失败');
-			$this->success('编辑成功',"Department/search/$id");
-		}else{
-			//返回指定id部门信息
-			$data = $d->where("dm_id='%d'",$id)->find();
-			if(!$data) $this->error('出错，部门不存在');
-			dump($data);
+			$d->is_parent = 0;			
+			if($haveChild) $d->is_parent = 1;
+			
+			// dump($data);
+			$where['dm_id'] = $id;
+			$result = $d
+					->where($where)
+					->fetchSql()
+					->save();
+			// if(!$result) {
+			// 	$result = '编辑失败';
+			// }else{
+			// 	$result = '编辑成功';
+			// }
+			$this->ajaxReturn($result);
 		}
 
 	}
