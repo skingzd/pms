@@ -92,4 +92,13 @@ class IndexController extends Controller {
         $this->display();
     }
 
+    public function view($id){
+        $p = A('Common');
+        $result['info'] = $p -> getRecord('baseinfo', $id, $ajax = false);
+        $result['edu'] = $p -> getSearch('edu', $id, $ajax = false);
+        $result['title'] = $p -> getSearch('title', $id, $ajax = false);
+        $result['trans'] = $p -> getSearch('trans', $id, $ajax = false);
+        dump($result);
+        $this->assign("result",$result);
+    }
 }

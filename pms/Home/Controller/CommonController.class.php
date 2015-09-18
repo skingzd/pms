@@ -8,7 +8,7 @@ Class CommonController extends Controller{
 		'title'		=>	array('table'=>'Title','key'=>'t_id'),
 		'trans'		=>	array('table'=>'Transfer','key'=>'trans_id'),
 	);
-
+	
 	public function getSearch($item, $words, $ajax = false){
 		A('User')->checkLevel();
 		$m = M($this->ItemIndex[$item]['table']);
@@ -23,17 +23,27 @@ Class CommonController extends Controller{
 		//长度超过人名则身份证匹配
 		$where['pid'] = $words;
 		$result = $m->where($where)->select();
-		dump($result);
+		// dump($result);
 		if($ajax) $this->ajaxReturn($result);
 		return $result;
 	}
-
+	/**
+	 * [getRecord get one record already know the type's !*ID*!]
+	 * @param  [type]  $item [what kind do you want search for]
+	 * @param  [type]  $id   [the id you given]
+	 * @param  boolean $ajax [return ajax?]
+	 * @return [type]        [search result]
+	 */
 	public function getRecord($item, $id, $ajax = false){
 		A('User')->checkLevel();
 		$m = M($this->ItemIndex[$item]['table']);
 		$where['status'] = 1;
-		$where[$this->ItemIndex[$item]['key']] = $id;
-		$result = $m->where($where)->find();
+		$where[$this->ItemIndex[$item]['key']] =$id;
+		$result = $m
+				->where($where)
+				// ->fetchSql()
+				->find();
+		// dump($result);
 		if($ajax) $this->ajaxReturn($result);
 		return $result;
 	}
@@ -41,6 +51,14 @@ Class CommonController extends Controller{
 	public function addRecord($item, $ajax = false){
 		//检查权限
 		A('User')->checkLevel(3);
+		if(!IS_POST) $this->redirect("Index/index");
+		$m = M( $this->ItemIndex[$item]['table'] );
+		$data = $m->create();
+		$data['last_edit'] = session('user');
+		$data['time_last_edit'] = time();
+		$resultId = $m->add($data);
+		if($ajax) $this->ajaxReturn($resultId);
+		return $resultId;
 	}
 
 	public function editRecord($item, $id, $ajax = false){
@@ -48,7 +66,7 @@ Class CommonController extends Controller{
 		$m = M($this->ItemIndex[$item]['table']);//初始化对应表的模型
 		//如果传入POST数据则进行数据库操作修改
 		if(IS_POST){
-			$data = $m->create();
+			$data = $m -> create();
 			unset($data['pid']);//不更新PID
 			unset($data['name']);//不更新NAME
 			unset($data[$this->ItemIndex[$item]['key']]);//不更新KEY
@@ -113,13 +131,24 @@ Class CommonController extends Controller{
 			//返回单个dm_id => dm_name
 			$where['dm_id'] = $id;
 			$result = $d
-					->field('dm_id,dm_name,is_parent,date_dm_setup,comment')
+					->field('dm_id,dm_name,by_parent,is_parent,date_dm_setup,comment')
 					->where($where)
 					->find();
 			$dm["n"] = $result["dm_name"];
 			$dm["is_p"] = $result["is_parent"];
 			$dm["date_setup"] = $result["date_setup"];
 			$dm["comment"] = $result["comment"];
+
+			//查询父部门
+			$where['dm_id'] = $result['by_parent'];
+			$parent = $d 
+					-> field('dm_id,dm_name')
+					-> where($where)
+					// -> fetchSql()
+					-> find();
+			$dm['p'] = $parent['dm_name'];
+			$dm['by_p'] = $parent['dm_id'];
+			// dump($dm);
 		}
 		if($ajax) $this->ajaxReturn($dm);
 		return $dm;
