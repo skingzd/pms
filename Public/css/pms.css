@@ -182,3 +182,51 @@ a:visited{
   background-color: #888888;
   border-color: #606060;
 }
+
+/* 部门选择器用样式 */
+.dmSelector{
+  margin: 40px;
+  list-style-type : none;
+}
+.dmSelector li{
+  list-style-type : none;
+}
+.dmSelector ul{
+  padding:0 25px;
+}
+.dmSelector li+ul{
+  background:url("/Public/image/tree.png") repeat-y;
+  background-position: -17px;
+}
+.dmSelector li>i{
+  display: inline-block;
+  margin: 0 4px;
+  width: 16px;
+  height: 16px;
+  background:url("/Public/image/tree.png") no-repeat;
+  background-position: 0 -74px;
+}
+
+.dmSelector ul > li:last-child > ul{
+  background:none;
+}
+
+.dmSelector ul > li:last-child > i{
+  background-position: 0 -94px;
+}
+
+
+.dmSelector li[class="open"] > i{
+  background-position:0 -21px;
+}
+.dmSelector li[class="open"]:last-child > i{
+  background-position:0 -40px;
+}
+
+
+.dmSelector li[class="closed"] > i{
+  background-position:0 -127px;
+}
+.dmSelector li[class="closed"]:last-child > i{
+  background-position:0 -147px;
+}
