@@ -196,7 +196,7 @@ a:visited{
 }
 .dmSelector li+ul{
   background:url("/Public/image/tree.png") repeat-y;
-  background-position: -17px;
+  background-position: -39px;
 }
 .dmSelector li>i{
   display: inline-block;
@@ -229,4 +229,7 @@ a:visited{
 }
 .dmSelector li[class="closed"]:last-child > i{
   background-position:0 -147px;
+}
+.dmSelector > li[id="0"] + ul{
+  background:none;
 }

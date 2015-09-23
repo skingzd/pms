@@ -9,7 +9,7 @@
  */
 function listDm(listTo, defaultId, rootName, callFn, addsOn){
 
-	var txt=rootName;
+	var txt="<li id='0' class='open'><i></i><a href='javascript:void(0)'>"+rootName+"</a></li>\n";;
 	$("#loading").show();
 	$(listTo).empty();
 	$.get('/index.php/Common/getDmTree/'+defaultId+'/1', function(dmTree) {

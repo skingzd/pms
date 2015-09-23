@@ -99,7 +99,7 @@
 		<div class="form-group col-sm-5" id="parentDmInfo">
 			<div class="page-header">
 				<h4>父级部门信息</h4>
-				<button class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#selectorModal" onclick="listDm('#dmSelector', 0, '四矿', choiceDm, 'choiceP');">重新选择父级部门</button>
+				<button class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#selectorModal" onclick="listDm('#dmSelector', 0, '四矿', choiceDm, 'choiceP');">选择父级部门</button>
 			</div>
 			<input type="hidden" name="dmId" id="dmId" >
 
@@ -119,11 +119,11 @@
   		<div class="row form-group">
   			  <div class="col-sm-2"></div>
 			  <div class="col-sm-3">
-			  	<button class="btn btn-lg btn-default" type="button" onclick="dmEditSave();">保存修改</button>
+			  	<button class="btn btn-lg btn-default" id="saveDm" type="button" onclick="dmEditSave();">保存修改</button>
 			  </div>
 			  <div class="col-sm-2"></div>
 			  <div class="col-sm-3">
-			  	<button class="btn btn-lg btn-default" type="button" onclick="cancelDm();">取消编辑</button>
+			  	<button class="btn btn-lg btn-default" id="cancelDm" type="button" onclick="cancelDm();">取消编辑</button>
 			  </div>
 			  <div class="col-sm-2"></div>
   		</div> <!-- ./form-group -->

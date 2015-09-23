@@ -49,33 +49,36 @@ class DepartmentController extends Controller{
 	public function edit($id){
 		A('User')->checkLevel(5);
 		if(1){
-			$d = M('Department');
+			$dc = M('Department');
+			$d = D('Department');
 			//查看是否有子部门
 			
 			$where['by_parent'] = $id;
-			$haveChild = $d->where($where)->find();
+			$haveChild = $dc->where($where)->find();
 			unset($where);
 
 			//创建数据
-			// if(!$d->create()) $this->ajaxReturn("获取数据失败");
+			// if(!$d->create()) $this->ajaxReturn("无数据提交");
 			$d->create();
-			dump($d);
+			// dump($d);
 			$d->last_edit = session('user');
 			$d->time_last_edit = time();
 			$d->is_parent = 0;			
 			if($haveChild) $d->is_parent = 1;
 			
 			// dump($data);
-			$where['dm_id'] = $id;
+
 			$result = $d
-					->where($where)
-					->fetchSql()
+					->where("dm_id = %s",$id)
+					// ->fetchSql()
 					->save();
-			// if(!$result) {
-			// 	$result = '编辑失败';
-			// }else{
-			// 	$result = '编辑成功';
-			// }
+			 
+			if($result) {
+				$result = '编辑成功';
+			}else{
+				$result = '编辑失败';
+			}
+			// dump($result);
 			$this->ajaxReturn($result);
 		}
 

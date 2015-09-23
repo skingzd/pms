@@ -5,11 +5,19 @@ function goPanel(panel){
 
 function choiceDm(dmId, dmName, addsOn){
 	// alert(dmId+dmName);
+	// alert(addsOn);
 	if(typeof(addsOn) == "undefined") return false;
 	var nowDm = "#dmNowChoice";
-	$(nowDm).val('').text(dmName);
+	$(nowDm).empty().text(dmName);
 	if(addsOn == "choiceDm") $("#choiceButton").unbind('click').click( {"dmId" : dmId, "to" : "dm"}, getDm);
-	if(addsOn == "choiceP") $("#choiceButton").unbind('click').click( {"dmId" : dmId, "to" : "p"}, getDm);	
+	if(addsOn == "choiceP") {
+		if($("#dmInfo #dmName").val() == ""){
+			alert("指定活动部门后选择父级部门");
+			$("#selectorModal").modal('hide');
+		}else{
+			$("#choiceButton").unbind('click').click( {"dmId" : dmId, "to" : "p"}, getDm);
+		}
+	}
 }
 
 function getDm(e){
@@ -63,29 +71,50 @@ function loading(op){
 			$("#loading").hide();
 		}
 	}
+	if(op == 'saveDm'){
+
+	}
 }
 
 function dmEditSave(){
-	var data,from;
+	var data,from,dmId;
 	from = '#dmInfo';
+	dmId =  $(from+' #dmId').val()
 	data = {
-		'id'			:	Number($(from+' #dmId').val()),
-		'name'			:	$(from+' #dmName').val(),
-		'datesetup'	:	$(from+' #dateSetup').val(),
+		'n'			:	$(from+' #dmName').val(),
+		's'			:	$(from+' #dateSetup').val(),
 		'c'			:	$(from+' #comment').val(),
-		'byp'		:	Number($('#parentDmInfo #dmId').val()),
+		'byp'		:	$('#parentDmInfo #dmId').val(),
 	};
-	if( $("#dmInfo #dmId").val() != "加载中..." && $("#parentDmInfo #dmId").val() != "加载中..." ) {
-		if(data.name == '' && data.byp == ''){
-			alert("部门名称和父级部门不能为空");
-		}else{
-			$.post('/index.php/Department/edit/'+data.id, data, function(msg) {
-				alert(msg);
-			}); // /.post
-		}	
-	}else{
+	//删除所有空值数据提交
+	// $.each(data, function(i, v) {
+	// 	if(v == '') delete data[i];
+	// });
+	if(dmId == "")	return false;
+
+	// 检查是否有数据还在加载
+	if( $("#dmInfo #dmId").val() == "加载中..." || $("#parentDmInfo #dmId").val() == "加载中..." ) {
+		// 防止提前提交提示
 		alert("请等待数据加载完毕");
+		return false;
 	}
+	if(data.n == '' || data.byp == ''){
+		if(dmId != "0"){
+			alert("部门名称与父级部门不能为空");
+			return false;
+		}
+		
+	}
+
+	// 规范数据
+	dmId = Number(dmId);
+	if(data.byp != "") data.byp = Number(data.byp);
 	
+	//设置按钮无法点击
+	// $("#saveDm").unbind('click').attr('disabled', 'disabled');
+	$.post('/index.php/Department/edit/'+dmId, data, function(msg) {
+		alert(msg);
+		// $("#saveDm").click(dmEditSave).removeAttr('disabled');
+	},"json"); // /.post
 
 }
