@@ -42,7 +42,7 @@ a:visited{
 
 .loading{
   display: block;
-  z-index: 9;
+  z-index: 99999;
   position: fixed;
   left:2px;
   top:2px;
@@ -191,6 +191,9 @@ a:visited{
 .dmSelector li{
   list-style-type : none;
 }
+.dmSelector li:hover{
+  background-color: #E8E8E8;
+}
 .dmSelector ul{
   padding:0 25px;
 }
@@ -232,4 +235,8 @@ a:visited{
 }
 .dmSelector > li[id="0"] + ul{
   background:none;
+}
+.dmSelector .active{
+  color:#fff;
+  background-color:gray;
 }

@@ -131,14 +131,16 @@ Class CommonController extends Controller{
 			//返回单个dm_id => dm_name
 			$where['dm_id'] = $id;
 			$result = $d
-					->field('dm_id,dm_name,is_parent,by_parent,date_dm_setup,comment')
+					// ->field('dm_id,dm_name,is_parent,by_parent,date_dm_setup,comment')
 					->where($where)
 					->find();
-			$dm["n"] = $result["dm_name"];
-			$dm["is_p"] = $result["is_parent"];
-			$dm["by_p"] = $result["by_parent"];
-			$dm["date_setup"] = $result["date_setup"];
-			$dm["comment"] = $result["comment"];
+			$dm['n'] = $result['dm_name'];
+			$dm['is_p'] = $result['is_parent'];
+			$dm['by_p'] = $result['by_parent'];
+			$dm['date_setup'] = $result['date_dm_setup'];
+			$dm['comment'] = $result['comment'];
+			$dm['e_by'] = $result['last_edit'];
+			$dm['e_time'] = date("Y-m-d H:i:s (P)",$result['time_last_edit']);
 
 			//查询父部门
 			$where['dm_id'] = $result['by_parent'];

@@ -7,8 +7,8 @@ function choiceDm(dmId, dmName, addsOn){
 	// alert(dmId+dmName);
 	// alert(addsOn);
 	if(typeof(addsOn) == "undefined") return false;
-	var nowDm = "#dmNowChoice";
-	$(nowDm).empty().text(dmName);
+	// var nowDm = "#dmNowChoice";
+	// $(nowDm).empty().text(dmName);
 	if(addsOn == "choiceDm") $("#choiceButton").unbind('click').click( {"dmId" : dmId, "to" : "dm"}, getDm);
 	if(addsOn == "choiceP") {
 		if($("#dmInfo #dmName").val() == ""){
@@ -25,7 +25,7 @@ function getDm(e){
 	if (e.data.to == "dm" ) to = "#dmInfo";
 	if (e.data.to == "p") to = "#parentDmInfo";
 	dmId = e.data.dmId;
-
+	$(to+' input,textarea').val('');
 	$("#selectorModal").modal('hide');
 	$(to+" #dmId").val('加载中...');
 	loading('dm');
@@ -37,7 +37,8 @@ function getDm(e){
 			$(to+" #dmName").val(data.n);
 			$(to+" #dmId").val(dmId);
 			$(to+" #dateSetup").val(data.date_setup);
-			$(to+" #comment").val(data.comment);	
+			$(to+" #comment").val(data.comment);
+			if(data.e_by != '')	$("#editLog").text("最后由 "+data.e_by+" 于 "+data.e_time+" 编辑");
 		}
 		loading('dm');
 		if (e.data.to == "dm" ) getP(dmId);
@@ -70,27 +71,33 @@ function loading(op){
 		if( $("#dmInfo #dmId").val() != "加载中..." && $("#parentDmInfo #dmId").val() != "加载中..." ) {
 			$("#loading").hide();
 		}
+	}else{
+		$("#loading").$.ajaxStop(function() {
+			$(this).hide();
+		});		
 	}
-	if(op == 'saveDm'){
 
-	}
 }
 
-function dmEditSave(){
-	var data,from,dmId;
+function dmEditSave(add){
+	var data,from,dmId,commitTo;
 	from = '#dmInfo';
-	dmId =  $(from+' #dmId').val()
+	dmId =  $(from+' #dmId').val();
 	data = {
 		'n'			:	$(from+' #dmName').val(),
 		's'			:	$(from+' #dateSetup').val(),
 		'c'			:	$(from+' #comment').val(),
 		'byp'		:	$('#parentDmInfo #dmId').val(),
 	};
-	//删除所有空值数据提交
-	// $.each(data, function(i, v) {
-	// 	if(v == '') delete data[i];
-	// });
-	if(dmId == "")	return false;
+	// 删除所有空值数据提交
+	$.each(data, function(i, v) {
+		if(v == '') data[i] = null;
+	});
+	if(dmId == "" && add == false){
+		alert('请选择部门');
+		listDm('#dmSelector', 0, '四矿', choiceDm, 'choiceDm');
+		return false;
+	} 
 
 	// 检查是否有数据还在加载
 	if( $("#dmInfo #dmId").val() == "加载中..." || $("#parentDmInfo #dmId").val() == "加载中..." ) {
@@ -98,23 +105,73 @@ function dmEditSave(){
 		alert("请等待数据加载完毕");
 		return false;
 	}
-	if(data.n == '' || data.byp == ''){
-		if(dmId != "0"){
-			alert("部门名称与父级部门不能为空");
-			return false;
-		}
-		
+	if($.trim(data.n) == ''){
+		alert('部门名称不能为空');
+		return false;
 	}
-
-	// 规范数据
-	dmId = Number(dmId);
-	if(data.byp != "") data.byp = Number(data.byp);
+	if($.trim(data.byp) == '' && dmId != "0"){
+		alert('父级部门不能为空');
+		return false;
+	}
+	
 	
 	//设置按钮无法点击
-	// $("#saveDm").unbind('click').attr('disabled', 'disabled');
-	$.post('/index.php/Department/edit/'+dmId, data, function(msg) {
+	$("#panelManageDm button").attr('disabled', 'disabled');
+	//选择保存还是添加
+	if(add == true){
+		commitTo = "/index.php/Department/addnew";
+	}else{
+		commitTo = '/index.php/Department/edit/'+dmId;
+	}
+	// AJAX实现
+	$.ajax({
+		url: commitTo,
+		type: 'POST',
+		dataType: 'json',
+		data: data,
+	})
+	.done(function(msg) {
 		alert(msg);
-		// $("#saveDm").click(dmEditSave).removeAttr('disabled');
-	},"json"); // /.post
+		console.log("success");
+		$("#panelManageDm button").removeAttr('disabled');
+		if(add == true) $('#btnChoiceDm').attr('disabled', 'disabled');
+	})
+	.fail(function() {
+		alert("服务器通信失败");
+		console.log("error");
+		$("#panelManageDm button").removeAttr('disabled');
+		if(add == true) $('#btnChoiceDm').attr('disabled', 'disabled');
+	});
+}
+
+function dmEditDel(){
+	var dmId = $('#dmInfo #dmId').val();
+	if( $.trim(dmId) == ''){
+		alert("请选择要删除的部门");
+		return false;
+	}
+	if( $.trim(dmId) == '加载中...'){
+		alert("请等待加载完毕");
+		return false;
+	}
+	$("#panelManageDm button").attr('disabled', 'disabled');
+
+	if (confirm("确定删除？") == true){
+		$.ajax({
+		url: '/index.php/Department/del/'+dmId,
+		type: 'GET',
+		dataType: 'json',
+		})
+		.done(function(msg) {
+			alert(msg);
+			console.log("success");
+			$("#panelManageDm button").removeAttr('disabled');
+		})
+		.fail(function() {
+			alert("服务器通信失败");
+			console.log("error");
+			$("#panelManageDm button").removeAttr('disabled');
+		});
+	}
 
 }

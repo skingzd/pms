@@ -26,47 +26,59 @@ class DepartmentController extends Controller{
 	}
 
 	public function addnew(){
+		if(!IS_POST) return false;
 		A('User')->checkLevel(5);
 		$d = D('Department');
-		//名称重复性检查
-		$check = $d->where("dm_name='%s'",I('post.dm_name'))->find();
-		if($check) $this->error('单位名称已存在');
-		//所属系统存在
-		$checkParent['dm_id'] = I('post.by_parent');
-		$checkParent['status'] = 1;
-		$check = $d->where($checkParent)->find();
-		if(!$check) $this->error('所属上级单位无效');
-		//创建数据
+		$dc = M('Department');
 		$d->create();
-
+		//名称重复性检查
+		$where['dm_name'] = $d->dm_name;
+		$check = $dc->where($where)->find();
+		if($check) $this->ajaxReturn('单位名称已存在');
+		//所属系统存在
+		$checkParent['dm_id'] = $d->by_parent;
+		$checkParent['status'] = 1;
+		$check = $dc->where($checkParent)->find();
+		if(!$check) $this->ajaxReturn('所属上级单位无效');
+		//设置编辑记录
+		
+		//是否有子部门
+		$d->is_parent = 0;
+		//新建部门，不会有子部门
+		//if($dc->where("by_parent = %s",$id)->find()) $d->is_parent = 1;
+		//创建日期为空则设置null
+		if($d->date_dm_setup == '') $d->date_dm_setup = null;
 		$d->status = 1;
 		$d->last_edit = session('user');
 		$d->time_last_edit = time();
-
-		return $d->add();
+		$result = $d
+				// ->fetchSql()
+				->add();
+		// $result ='新增失败';
+		// if($d->add()) $result = '新增成功';
+		$this->ajaxReturn($result);
 	}
 
 	public function edit($id){
 		A('User')->checkLevel(5);
-		if(1){
+		if(IS_POST){
 			$dc = M('Department');
 			$d = D('Department');
-			//查看是否有子部门
-			
-			$where['by_parent'] = $id;
-			$haveChild = $dc->where($where)->find();
-			unset($where);
 
 			//创建数据
-			// if(!$d->create()) $this->ajaxReturn("无数据提交");
-			$d->create();
-			// dump($d);
+			if(!$d->create()) $this->ajaxReturn("无数据提交");
+			// $d->create();
+
+			if($d->date_dm_setup == '') $d->date_dm_setup = null;
+			//是否有子部门
+			$d->is_parent = 0;
+			if($dc->where("by_parent = %s",$id)->find()) $d->is_parent = 1;
+
 			$d->last_edit = session('user');
 			$d->time_last_edit = time();
 			$d->is_parent = 0;			
-			if($haveChild) $d->is_parent = 1;
+
 			
-			// dump($data);
 
 			$result = $d
 					->where("dm_id = %s",$id)
@@ -80,6 +92,7 @@ class DepartmentController extends Controller{
 			}
 			// dump($result);
 			$this->ajaxReturn($result);
+			// echo json_encode($result);
 		}
 
 	}
@@ -89,14 +102,13 @@ class DepartmentController extends Controller{
 
 		$d = M('Department');
 		$isExist = $d->where("dm_id = %d and `status` = 1",$id)->find();
-		if(!$isExist) $this->error('待删除部门不存在');
+		if(!$isExist) $this->ajaxReturn('待删除部门不存在');
 		//如果是删除系统，判断系统是否为空
 		$isEmpty = $d->where("by_parent = '%d'",$id)->find();
-		if($isEmpty) $this->error('删除失败，系统非空');
+		if($isEmpty) $this->ajaxReturn('删除失败，部门非空');
 
 		$result = $d->where("`dm_id` = %d",$id)->setField('status',0);
-		if($result == 1) $this->success("成功删除");
-			
+		if($result == 1) $this->ajaxReturn("成功删除");
 	}
 }	
 ?>

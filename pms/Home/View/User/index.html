@@ -2,12 +2,12 @@
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>
-	<meta charset="utf-8">
-	<meta http-equiv="X-UA-Compatible" content="IE=edge">
-	<meta name="viewport" content="width=device-width,initial-scale=1">
-	<title>PMS</title>
-	<link href="/Public/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/Public/css/pms.css" rel="stylesheet">
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>PMS</title>
+  <link href="/Public/css/bootstrap.min.css" rel="stylesheet">
+  <link href="/Public/css/pms.css" rel="stylesheet">
 <block name="head">
 <style>
 
@@ -18,44 +18,44 @@
 <div class="container">
 <block name="content">
 <div class="content-min-height">
-	<div class="row">
-		<div class="col-sm-3 col-md-2">
-			<ul class="list-group" id="panelNav">
-				<a class="list-group-item" href="javascript:goPanel('ChangePwd')"><span class="glyphicon glyphicon-pencil"></span> 修改密码</a>
-				<a class="list-group-item" href="javascript:goPanel('ManageUser')"><span class="glyphicon glyphicon-cog"></span> 用户管理</a>
-				<a class="list-group-item" href="javascript:goPanel('ManageDm')"><span class="glyphicon glyphicon-list-alt"></span> 部门管理</a>
-				<a class="list-group-item" href="logout.html"><span class="glyphicon glyphicon-log-out"></span> 退出登录</a>
-			</ul>
-		</div>
-		<div class="col-sm-9 col-md-10">
+  <div class="row">
+    <div class="col-sm-3 col-md-2">
+      <ul class="list-group" id="panelNav">
+        <a class="list-group-item" href="javascript:goPanel('ChangePwd')"><span class="glyphicon glyphicon-pencil"></span> 修改密码</a>
+        <a class="list-group-item" href="javascript:goPanel('ManageUser')"><span class="glyphicon glyphicon-cog"></span> 用户管理</a>
+        <a class="list-group-item" href="javascript:goPanel('ManageDm')"><span class="glyphicon glyphicon-list-alt"></span> 部门管理</a>
+        <a class="list-group-item" href="logout.html"><span class="glyphicon glyphicon-log-out"></span> 退出登录</a>
+      </ul>
+    </div>
+    <div class="col-sm-9 col-md-10">
 <!-- 修改密码面板 -->
 <div class="panel panel-default" id="panelChangePwd" style="display:none;">
   <div class="panel-heading">修改登录密码</div>
   <div class="panel-body">
-  	<form  class="form-horizontal">
-  		<div class="form-group">
-  			<label class="col-sm-3" for="originPwd">原始密码：</label>
-		    <div class="col-sm-6">
-		    	<input class="form-control" type="password" name="originPwd" id="originPwd" required="required">
-		    </div>
-  		</div>
+    <form  class="form-horizontal">
+      <div class="form-group">
+        <label class="col-sm-3" for="originPwd">原始密码：</label>
+        <div class="col-sm-6">
+          <input class="form-control" type="password" name="originPwd" id="originPwd" required="required">
+        </div>
+      </div>
 
-    	<div class="form-group">
-  			<label class="col-sm-3" for="originPwd">新密码：</label>
-		    <div class="col-sm-6">
-		    	<input class="form-control" type="password" name="newPwd" id="newPwd" required="required">
-		    </div>
-  		</div>
+      <div class="form-group">
+        <label class="col-sm-3" for="originPwd">新密码：</label>
+        <div class="col-sm-6">
+          <input class="form-control" type="password" name="newPwd" id="newPwd" required="required">
+        </div>
+      </div>
 
-  		<div class="form-group">
-  			<label class="col-sm-3" for="originPwd">重复新密码：</label>
-		    <div class="col-sm-6">
-		    	<input class="form-control" type="password" name="reNewPwd" id="reNewPwd" required="required">
-		    </div>
-  		</div>
-  		<br/>
-  			<button class="btn btn-default">确认修改</button>
-  	</form>
+      <div class="form-group">
+        <label class="col-sm-3" for="originPwd">重复新密码：</label>
+        <div class="col-sm-6">
+          <input class="form-control" type="password" name="reNewPwd" id="reNewPwd" required="required">
+        </div>
+      </div>
+      <br/>
+        <button class="btn btn-default">确认修改</button>
+    </form>
   </div>
 </div>
 
@@ -63,106 +63,122 @@
 <div class="panel panel-default" id="panelManageUser" style="display:none;">
   <div class="panel-heading">用户管理</div>
   <div class="panel-body">
-  	<form  class="form-horizontal">
+    <form  class="form-horizontal">
 
-  	</form>
+    </form>
   </div>
 </div>
 
 <!-- 部门管理 -->
-<div class="panel panel-default" id="panelManageDm" style="display:block;">
+<div class="panel panel-default" id="panelManageDm" style="display:none;">
   <div class="panel-heading">部门管理</div>
+
   <div class="panel-body">
-  	<form  class="form-horizontal">
-  		<div class="col-sm-1"></div>
-  		<div class="form-group col-sm-5" id="dmInfo">
-			<div class="page-header">
-				<h4>选择并查看部门信息</h4>
-				<button class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#selectorModal" onclick="listDm('#dmSelector', 0, '四矿', choiceDm, 'choiceDm');">选择部门</button>
-			</div>
-			<input type="hidden" name="dmId" id="dmId" >
+    <form  class="form-horizontal">
+    <!-- 部门编辑功能选择条 -->
+      <ul class="nav nav-tabs" role="tablist" id="dmEditPagerHeader">
+        <li role="presentation" class="active"><a href="#dmEdit" aria-controls="dmEdit" role="tab" data-toggle="tab">修改部门</a></li>
+        <li role="presentation"><a href="#dmAdd" aria-controls="dmAdd" role="tab" data-toggle="tab">新增部门</a></li>
+      </ul>
 
-			<label for="dmId">部门编号</label>
-			<input type="text" class="form-control" disabled="disabled" name="dmId" id="dmId"  disable="disable">
+      <div class="col-sm-1"></div>
+      <div class="form-group col-sm-5" id="dmInfo">
+        <div class="page-header">
+          <h4>选择并查看部门信息</h4>
+          <button class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#selectorModal" onclick="listDm('#dmSelector', 0, '四矿', choiceDm, 'choiceDm');" id="btnChoiceDm">选择部门</button>
+        </div>
+        <input type="hidden" name="dmId" id="dmId" >
 
-			<label for="dmName">部门名称</label>
-			<input type="text" class="form-control" name="dmName" id="dmName" >
+        <label for="dmId">部门编号</label>
+        <input type="text" class="form-control" disabled="disabled" name="dmId" id="dmId"  disable="disable">
 
-			<label for="dateSetup">成立时间</label>
-			<input type="date" class="form-control" name="dateSetup" id="dateSetup" >
+        <label for="dmName">部门名称</label>
+        <input type="text" class="form-control" name="dmName" id="dmName" >
 
-			<label for="comment">部门备注</label>
-			<textarea class="form-control" row="4" name="comment" id="comment"></textarea>
-			
-  		</div> <!-- ./form-group col-sm-5 -->
-		<div class="col-sm-1"></div>
-		<div class="form-group col-sm-5" id="parentDmInfo">
-			<div class="page-header">
-				<h4>父级部门信息</h4>
-				<button class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#selectorModal" onclick="listDm('#dmSelector', 0, '四矿', choiceDm, 'choiceP');">选择父级部门</button>
-			</div>
-			<input type="hidden" name="dmId" id="dmId" >
+        <label for="dateSetup">成立时间</label>
+        <input type="date" class="form-control" name="dateSetup" id="dateSetup" >
 
-			<label for="dmId">部门编号</label>
-			<input type="text" class="form-control" disabled="disabled" name="dmId" id="dmId"  disable="disable">
+        <label for="comment">部门备注</label>
+        <textarea class="form-control" row="4" name="comment" id="comment"></textarea>
+      </div> <!-- ./form-group col-sm-5 -->
+    <div class="col-sm-1"></div>
+    <div class="form-group col-sm-5" id="parentDmInfo">
+      <div class="page-header">
+        <h4>父级部门信息</h4>
+        <button class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#selectorModal" onclick="listDm('#dmSelector', 0, '四矿', choiceDm, 'choiceP');" id="btnChoiceP">选择父级部门</button>
+      </div>
+      <input type="hidden" name="dmId" id="dmId" >
 
-			<label for="dmName">部门名称</label>
-			<input type="text" class="form-control" disabled="disabled" name="dmName" id="dmName" >
+      <label for="dmId">部门编号</label>
+      <input type="text" class="form-control" disabled="disabled" name="dmId" id="dmId"  disable="disable">
 
-			<label for="dateSetup">成立时间</label>
-			<input type="date" class="form-control" disabled="disabled" name="dateSetup" id="dateSetup" >
+      <label for="dmName">部门名称</label>
+      <input type="text" class="form-control" disabled="disabled" name="dmName" id="dmName" >
 
-			<label for="comment">部门备注</label>
-			<textarea class="form-control" disabled="disabled" row="4" name="comment" id="comment"></textarea>
-  		</div> <!-- ./form-group col-sm-5 -->
+      <label for="dateSetup">成立时间</label>
+      <input type="date" class="form-control" disabled="disabled" name="dateSetup" id="dateSetup" >
 
-  		<div class="row form-group">
-  			  <div class="col-sm-2"></div>
-			  <div class="col-sm-3">
-			  	<button class="btn btn-lg btn-default" id="saveDm" type="button" onclick="dmEditSave();">保存修改</button>
-			  </div>
-			  <div class="col-sm-2"></div>
-			  <div class="col-sm-3">
-			  	<button class="btn btn-lg btn-default" id="cancelDm" type="button" onclick="cancelDm();">取消编辑</button>
-			  </div>
-			  <div class="col-sm-2"></div>
-  		</div> <!-- ./form-group -->
-  	</form>
+      <label for="comment">部门备注</label>
+      <textarea class="form-control" disabled="disabled" row="4" name="comment" id="comment"></textarea>
+      </div> <!-- ./form-group col-sm-5 -->
+
+      <!-- 部门编辑功能选择实现区 -->
+      <div class="tab-content">
+      <div role="tabpanel" class="tab-pane active" id="dmEdit">
+        <div class="row form-group">
+          <div class="col-sm-1"></div>
+          <div class="col-sm-2">
+            <button class="btn btn-lg btn-default" type="button" onclick="dmEditSave(0);">保存修改</button>
+          </div>
+          <div class="col-sm-7"><small id="editLog"></small></div>
+          <div class="col-sm-2">  
+            <button class="btn btn-lg btn-danger" type="button" onclick="dmEditDel();">删除该单位</button>
+          </div>
+        </div> <!-- ./form-group -->
+      </div> <!-- ./tab-pane dmEdit -->
+        <div role="tabpanel" class="tab-pane" id="dmAdd">
+          <div class="row form-group">
+            <div class="col-sm-1"></div>
+            <div class="col-sm-2">
+              <button class="btn btn-lg btn-default" type="button" onclick="dmEditSave(1);">新增单位</button>
+            </div>
+            <div class="col-sm-9"></div>
+          </div> <!-- ./form-group -->
+        </div>
+      </div> <!-- ./tab-content -->
+    </form>
+  </div> <!-- ./pane-body -->
+<!-- Modal -->
+<div class="modal fade" id="selectorModal" tabindex="-1" role="dialog" aria-labelledby="dmSelector">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="dmSelector1">部门选择
+          <!-- <small>当前选择为：</small> -->
+          <small id="dmNowChoice"></small>
+        </h3>
+        </div>
+        <div class="modal-body dmSelector"  id="dmSelector">
+          <!-- 部门选择其输出位置 -->
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" id="dmId" />
+          <input type="hidden" id="dmName" />
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+          <button type="button" class="btn btn-primary" id="choiceButton">选择该部门</button>
+        </div>
+      </div>
+    </div>
   </div>
-
-
-
-	<!-- Modal -->
-	<div class="modal fade" id="selectorModal" tabindex="-1" role="dialog" aria-labelledby="dmSelector">
-	  <div class="modal-dialog" role="document">
-	    <div class="modal-content">
-	      <div class="modal-header">
-	        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-	        <h3 class="modal-title" id="dmSelector1">部门选择
-	        	<small>当前选择为：</small>
-	        	<small id="dmNowChoice"></small>
-	        </h3>
-	      </div>
-	      <div class="modal-body dmSelector"  id="dmSelector">
-					<!-- 部门选择其输出位置 -->
-	      </div>
-	      <div class="modal-footer">
-	      	<input type="hidden" id="dmId" />
-	      	<input type="hidden" id="dmName" />
-	      	<button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-	        <button type="button" class="btn btn-primary" id="choiceButton">选择该部门</button>
-	      </div>
-	    </div>
-	  </div>
-	</div>
 </div> <!-- /.panelManageDm -->
 
 
 
 
 
-		</div>
-	</div>
+    </div>
+  </div>
 </div>
 </block>
 </div><!--/container-->
@@ -171,18 +187,31 @@
 
 <block name="end">
 <script>
-var dmTree;
+// var dmTree;
   function initial(){
     // $("#navbar li#?").addClass("active");
     //设置左侧导航条点击样式
-    $("ul#panelNav>a").click(function(){
-    	$("ul#panelNav>a").removeClass("active");
-    	$(this).addClass("active");
+    $("ul#panelNav>a").unbind('click').click(function(){
+      $("ul#panelNav>a").removeClass("active");
+      $(this).addClass("active");
     })
-  }
+    //启用标签选择器
+   //$('#dmEditPagerHeader a').click(function (e) {
+  //   e.preventDefault()
+  //   $(this).tab('show')
+  // })
+    $('#dmEditPagerHeader [href="#dmEdit"').click(function(){
+      $('#btnChoiceDm').removeAttr('disabled');
+      $('#btnChoiceP').removeAttr('disabled');
+    });
+    $('#dmEditPagerHeader [href="#dmAdd"').click(function(){
+      $('#btnChoiceDm').attr('disabled', 'disabled');
+      $('#btnChoiceP').removeAttr('disabled');
+    });
+  } // initial
 </script>
 <script src="/Public/js/pms_user.js"></script>
 <script src="/Public/js/pms_dm_selecter.js"></script>
 </block>
-</body>	
+</body>  
 </html>
