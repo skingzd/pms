@@ -24,7 +24,7 @@ class UserController extends Controller{
 			$this->display();
 			return false;
 		}else{
-			$name = I('post.name',fasle);
+			$name = trim(I('post.name',fasle));
 			$pwd  = I('post.pwd',false);
 
 			$u   = M('User');
@@ -52,32 +52,38 @@ class UserController extends Controller{
 		$this->checkLevel();
 		if(IS_POST){
 			$name   = session('user');
-			$pwd    = I('post.password',false);
-			$newPwd = I('post.newpassword',false);
+			$pwd    = I('post.oldPwd',false);
+			$newPwd = I('post.newPwd',false);
 
 			$u   = M('User');
 			$pwd = md5($pwd);
 			
 			$where['u_name'] = $name;
 			$where['u_pwd']  = $pwd;
-			$check = $u->where($where)->find();
-			if(!$check)$this->error('原始密码不正确');
+			$check = $u
+					// ->fetchSql()
+					->where($where)
+					->find();
+			if(!$check) $this->ajaxReturn('原始密码不正确');
+			// $this->ajaxReturn($check);
 			
 			//执行密码修改
 			$newPwd         = md5($newPwd);
-			$data['u_name'] = $name;
 			$data['u_pwd']  = $newPwd;
-			$result = $u->data($data)->save();
-			if(!$result) $this->error('修改密码失败');
-			$this->success('修改成功','User/index',3);
-		}
-		$this->show('显示修改密码界面');
-		
+			$result = $u
+					->where("u_name = '%s'",$name)
+					->data($data)
+					// ->fetchSql()
+					->save();
+			// $this->ajaxReturn($result);
+			if(!$result) $this->ajaxReturn('修改密码失败');
+			$this->ajaxReturn('修改成功');
+		}		
 	}
 
 	public function changeLevel($name){
 		if(IS_POST){
-			if( $this->checkLevel() < 7 ) $this->error('无权修改');
+			$this->checkLevel(7);
 
 			$level = I('post.level',false);
 			if($level >= $this->checkLevel()) $this->error('权限不得超过当前用户');
@@ -90,7 +96,7 @@ class UserController extends Controller{
 	}
 
 	public function addNew(){
-		if( $this->checkLevel() < 7 ) $this->error('无权添加');
+		$this->checkLevel(7);
 		$name = I('post.username',fasle);
 		$pwd = I('post.password',false);
 		$level = I('post.level',false);
@@ -108,6 +114,31 @@ class UserController extends Controller{
 		$result = $u->data($data)->add();
 		if(!$result) $this->error('添加失败');
 		$this->success('添加成功','User/index');
-	}	
+	}
+	public function listUser($page = 1, $ajax = false){
+		$level = $this->checkLevel();
+		$u = M("User");
+		$where['u_level'] = array("LT",$level);
+		$result = $u
+				->field('u_id 			as i,
+						u_name 			as n,
+						u_level 		as l,
+						time_last_login as t,
+						time_create 	as c'
+						)
+				->where($where)
+				// ->fetchSql()
+				->page($page,10)
+				->select();
+		//没有数据直接返回
+		if(!$result) return $ajax ? json_encode(false) : false;
+		foreach ($result as $key => $value) {
+			$result[$key]['t'] = date("Y-m-d H:i:s", $value['t']); 
+			$result[$key]['c'] = date("Y-m-d H:i:s", $value['c']); 
+		}
+		// dump($result);
+
+		return $ajax ? $this->ajaxReturn($result) : $result;
+	}
 }
 ?>

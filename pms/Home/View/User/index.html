@@ -10,7 +10,12 @@
   <link href="/Public/css/pms.css" rel="stylesheet">
 <block name="head">
 <style>
-
+.user-list{
+  margin: 15px;
+  min-height: 450px;
+  /*border:1px solid #ccc;*/
+  border-radius:5px; 
+}
 </style>
 </block>
 </head>
@@ -36,38 +41,65 @@
       <div class="form-group">
         <label class="col-sm-3" for="originPwd">原始密码：</label>
         <div class="col-sm-6">
-          <input class="form-control" type="password" name="originPwd" id="originPwd" required="required">
+          <input class="form-control" type="password" name="oldPwd" id="oldPwd" required="required">
         </div>
       </div>
 
       <div class="form-group">
-        <label class="col-sm-3" for="originPwd">新密码：</label>
+        <label class="col-sm-3" for="newPwd">新密码：</label>
         <div class="col-sm-6">
           <input class="form-control" type="password" name="newPwd" id="newPwd" required="required">
         </div>
       </div>
 
       <div class="form-group">
-        <label class="col-sm-3" for="originPwd">重复新密码：</label>
+        <label class="col-sm-3" for="reNewPwd">重复新密码：</label>
         <div class="col-sm-6">
           <input class="form-control" type="password" name="reNewPwd" id="reNewPwd" required="required">
         </div>
       </div>
       <br/>
-        <button class="btn btn-default">确认修改</button>
+        <button class="btn btn-default" type="button" onclick="changePwd();">确认修改</button>
     </form>
   </div>
 </div>
 
 <!-- 用户管理 -->
-<div class="panel panel-default" id="panelManageUser" style="display:none;">
+<div class="panel panel-default" id="panelManageUser" style="display:block;">
   <div class="panel-heading">用户管理</div>
   <div class="panel-body">
     <form  class="form-horizontal">
-
+      <div class="form-group col-sm-4">
+        <div class="user-list list-group" id="userList">
+          <!-- 用户列表区 -->
+        </div>
+      </div>
+      <div class="form-group col-sm-8" id="userEditor">
+        用户名
+        密码
+        重复密码
+        用户级别
+      </div>
+  <div class="row">
+    <div class="col-sm-12">
+      <ul class="pagination" id="userPager">
+        <li id="pre">
+          <a aria-label="上一页">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        <!-- 页码排列位置 -->
+        <li id="next">
+          <a aria-label="下一页">
+            <span aria-hidden="true">&raquo;</span>
+          </a>
+        </li>
+      </ul>
+    </div> <!-- ./col-sm-12 -->
+  </div> <!-- ./row -->
     </form>
-  </div>
-</div>
+  </div> <!-- ./panel-body -->
+</div> <!-- ./panelManageUser -->
 
 <!-- 部门管理 -->
 <div class="panel panel-default" id="panelManageDm" style="display:none;">
@@ -212,6 +244,8 @@
 </script>
 <script src="/Public/js/pms_user.js"></script>
 <script src="/Public/js/pms_dm_selecter.js"></script>
+<script src="/Public/js/pms_pager.js"></script>
+
 </block>
 </body>  
 </html>

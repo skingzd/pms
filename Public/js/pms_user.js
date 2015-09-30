@@ -1,6 +1,7 @@
 function goPanel(panel){
 	$("div[id^=panel]").hide();
 	$("div[id^=panel"+panel+"]").show(200);
+	if(panel == 'ManageUser') listUser(1);
 }
 
 function choiceDm(dmId, dmName, addsOn){
@@ -174,4 +175,69 @@ function dmEditDel(){
 		});
 	}
 
+}
+
+function changePwd(){
+	var data;
+	data = {
+		'oldPwd' : $('#panelChangePwd #oldPwd').val(),
+		'newPwd' : $('#panelChangePwd #newPwd').val(),
+		'reNewPwd' : $('#panelChangePwd #reNewPwd').val(),
+	};
+
+	if(data.newPwd === data.oldPwd) {
+		alert('原密码与新密码一致，无需修改');
+		return;
+	}
+
+	if(data.newPwd.length <6 || data.newPwd.length>16) {
+		alert('密码长度需在6-16位之间');
+		return;
+	}
+
+	if(data.reNewPwd !== data.newPwd) {
+		alert('新密码与重复新密码不一致');
+		return;
+	}
+
+	$('#panelChangePwd button').attr('disabled', 'disabled');
+		$.ajax({
+		url: '/index.php/User/changePwd/',
+		type: 'POST',
+		data:data,
+		dataType: 'json',
+		})
+		.done(function(msg) {
+			alert(msg);
+			console.log("success："+msg);
+			$('#panelChangePwd button').removeAttr('disabled');
+			$('#panelChangePwd input').val('');
+		})
+		.fail(function() {
+			alert("服务器通信失败");
+			console.log("error");
+			$('#panelChangePwd button').removeAttr('disabled');
+		});
+}
+function listUser(page){
+	var txt;
+	if(typeof(page) == 'object') page = page.to;
+	$.get('/index.php/User/listUser/'+page+'/1', function(data) {
+		console.log(data);
+		$.each(data, function(index, val) {
+			txt = '<a href=\"#\" class=\"list-group-item\"><span class=\"badge\" id=\"'+val.i+'\">'+val.l+'</span>'+val.n+'</a>\n';
+			$('#userList').append(txt);
+			$('#userList a').click(function(){
+				$('#userList a').removeClass('active');
+				$(this).addClass('active');
+			});
+		});
+		// ./each
+		makePager('#userList', page, data.length, 10, listUser, null) {
+	});
+	// ./get
+
+}
+function viewUser(uid){
+	alert(uid);
 }
