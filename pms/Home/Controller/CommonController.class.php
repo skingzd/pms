@@ -3,7 +3,7 @@ namespace Home\Controller;
 use Think\Controller;
 Class CommonController extends Controller{
 	public $ItemIndex = array(
-		'baseinfo'	=>	array('table'=>'People','key'=>'pid'),
+		'base'		=>	array('table'=>'People','key'=>'pid'),
 		'edu'		=>	array('table'=>'Education','key'=>'edu_id'),
 		'title'		=>	array('table'=>'Title','key'=>'t_id'),
 		'trans'		=>	array('table'=>'Transfer','key'=>'trans_id'),
@@ -13,17 +13,30 @@ Class CommonController extends Controller{
 		A('User')->checkLevel();
 		$m = M($this->ItemIndex[$item]['table']);
 		$where['status'] = 1;
-		if(strlen($words)<15){//关键词大于15则按照ID查找
+		if(strlen($words)<15){//关键词小于15则按照姓名查找
 			$where['name'] = array('LIKE',"%$words%");
-			$result = $m->where($where)->select();
+			$result = $m
+				->where($where)
+				->fetchSql()
+				->order( array($this->ItemIndex[$item]['key'] => 'desc') )
+				->select();
 			if($ajax) $this->ajaxReturn($result);
 			dump($result);
 			return $result;
 		}
 		//长度超过人名则身份证匹配
 		$where['pid'] = $words;
-		$result = $m->where($where)->select();
-		// dump($result);
+		$result = $m
+				// ->fetchSql()
+				->order( array( $this->ItemIndex[$item]['key'] => 'desc' ) )
+				->where($where)
+				->select();
+
+		foreach ($variable as $key => $value) {
+			# code...
+		}
+
+		dump($result);
 		if($ajax) $this->ajaxReturn($result);
 		return $result;
 	}
