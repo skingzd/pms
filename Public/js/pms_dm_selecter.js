@@ -10,7 +10,7 @@
 function listDm(listTo, defaultId, rootName, callFn, addsOn){
 
 	var txt="<li id='0' class='open'><i></i><a href='javascript:void(0)'>"+rootName+"</a></li>\n";;
-	$("#loading").show();
+	L('listDm');
 	$(listTo).empty();
 	$(listTo).parent().find("button").last().text("选择部门");
 	$.get('/index.php/Common/getDmTree/'+defaultId+'/1', function(dmTree) {
@@ -73,6 +73,6 @@ function listDm(listTo, defaultId, rootName, callFn, addsOn){
 					);
 			});
 		}
-	$("#loading").hide();
+	L('listDm');
 	}); // .get
 }

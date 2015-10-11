@@ -182,7 +182,9 @@ a:visited{
   background-color: #888888;
   border-color: #606060;
 }
-
+.list-group .active .badge{
+  color:#777;
+}
 /* 部门选择器用样式 */
 .dmSelector{
   margin: 40px;
@@ -239,4 +241,18 @@ a:visited{
 .dmSelector .active{
   color:#fff;
   background-color:gray;
+}
+
+.pagination{
+  cursor:pointer;
+}
+.pagination>li>a{
+  color:#777;
+}
+.pagination>li>a:hover{
+  color:#000;
+}
+.pagination>.active>a, .pagination>.active>a:focus, .pagination>.active>a:hover {
+  background-color:#777;
+  border-color: #777;
 }

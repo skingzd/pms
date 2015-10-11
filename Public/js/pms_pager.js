@@ -19,10 +19,12 @@ function makePager(pagerId, nowPage, resultCount, perPage, callFn, addsOn) {
     "addOn": addsOn,
     "resultCount": resultCount,
   };
+
   var pager = {
-    "pre" : $("#"+pagerId+">#pre"),
-    "next": $("#"+pagerId+">#next"),
+    "pre" : $(pagerId+">#pre"),
+    "next": $(pagerId+">#next"),
   }
+
   //计算上、下页码，总页数
   page.max = parseInt(page.resultCount / page.per);
   if (page.max * page.per < page.resultCount) page.max = parseInt(page.max) + 1;

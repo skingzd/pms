@@ -2,7 +2,8 @@ function pListLoadFrom(id, page) {
   // 动态加载人员列表框内容
   if($("#subTitle").text() == "加载中...") return false;
   page = typeof(page) == "undefined" ? 1 : page; //默认第一页
-  $("#loading").show();
+  L('pListLoadFrom');
+  setTimeout(3000);
   $("#subTitle").text("加载中...");
   $("#content-right").show();
   $("#pList").empty();
@@ -30,21 +31,26 @@ function pListLoadFrom(id, page) {
       txt += "</tr>";
       $("#pList").append(txt);
     });
+    // ./each
     //输出翻页条
+    console.log("#pager", page, p["resultCount"], perPage, goPage, id);
     makePager("#pager", page, p["resultCount"], perPage, goPage, id);
     $("#subTitle").text("共" + p["resultCount"] + "人");
-    checkLoading(); //检查是否全部加载结束判断是否隐藏loading
+    
     $("tr[id]").click(function() {//实现行点击动作
       alert($(this).attr('id'));
     })
+    L('pListLoadFrom');
   });
+  //.get
   $("#pListTitle").text(dmList[id]["n"]);
 }
 
 function dmListLoadFrom(id) {
   //动态加载单位列表
   var dm, key, txt;
-  $("#loading").show();
+  L('dmListLoadFrom');
+  
   $("#dmList").empty().text("加载中...");
   $.get("/index.php/Common/getDm/" + id + "/1/1", function(dm) {
     $("#dmList").empty();
@@ -58,11 +64,11 @@ function dmListLoadFrom(id) {
           goToDm(k.data)
         });
       $("#dmList").append(txt);
-
+      
     }
     // 更新单位列表
     dmList = dm;
-    checkLoading(); //检查是否全部加载结束判断是否隐藏loading
+    L('dmListLoadFrom');
   });
 }
 
@@ -74,7 +80,7 @@ function backToDm(id) {
 
 function goToDm(id) {
   var lastPath, lastId, txt, isParent;
-  $("#loading").show();
+  L('goToDm');
   lastPath = $("#dmPath>li:last");
   lastId = $(lastPath).attr("id");
   if (typeof(dmList[id]) != "undefined") isParent = dmList[id]["is_p"];
@@ -92,6 +98,7 @@ function goToDm(id) {
 
     dmListLoadFrom(id);
     pListLoadFrom(id);
+    L('goToDm');
   } else {
     //不是父部门则更改路径当前位置
     $(lastPath).attr("id", id).text(dmList[id]["n"]);
@@ -99,14 +106,11 @@ function goToDm(id) {
     $("#dmList>a#" + lastId).removeClass().addClass("list-group-item");
     $("#dmList>a#" + id).addClass("active");
     pListLoadFrom(id);
+    L('goToDm');
   }
+  
 
 }
-
-function checkLoading() {
-  if (($("#subTitle").text() != "加载中...") && ($("#dmList").text() != "加载中..."))$("#loading").hide();
-}
-
 function goPage(e){
   // alert(e.data.addsOn);
   // alert(e.data.to);

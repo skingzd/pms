@@ -11,10 +11,18 @@
 <block name="head">
 <style>
 .user-list{
-  margin: 15px;
+  margin: 0;
+  padding:15px;
   min-height: 450px;
   /*border:1px solid #ccc;*/
   border-radius:5px; 
+}
+.user-edit{
+  padding:15px;
+  text-align: center;
+}
+.search-user-block{
+  padding:15px;
 }
 </style>
 </block>
@@ -65,24 +73,113 @@
 </div>
 
 <!-- 用户管理 -->
-<div class="panel panel-default" id="panelManageUser" style="display:block;">
+<div class="panel panel-default" id="panelManageUser" style="display:none;">
   <div class="panel-heading">用户管理</div>
   <div class="panel-body">
+    <ul class="nav nav-tabs" role="tablist" id="dmEditPagerHeader">
+        <li role="presentation" class="active"><a href="#userEditor" aria-controls="userEditor" role="tab" data-toggle="tab">管理用户</a></li>
+        <li role="presentation"><a href="#userCreator" aria-controls="userCreator" role="tab" data-toggle="tab">新增用户</a></li>
+    </ul>
+
     <form  class="form-horizontal">
       <div class="form-group col-sm-4">
+        <div class="search-user-block">
+          <input type="text" class="form-control" id="searchUser" placeholder="搜索用户名..."/>
+        </div>
+        
         <div class="user-list list-group" id="userList">
           <!-- 用户列表区 -->
         </div>
       </div>
-      <div class="form-group col-sm-8" id="userEditor">
-        用户名
-        密码
-        重复密码
-        用户级别
+    <div class="tab-content" id="userEditArea">
+      <div role="tabpanel" class="form-group col-sm-8 user-edit tab-pane" id="userEditor">        
+        <form action="" class="form-horizontal">
+          <div class="form-group">
+            <label for="" class="col-sm-3">ID</label>
+            <div class="col-sm-9">
+              <p class="form-control-static" id="uid"></p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-3">用户名</label>
+            <div class="col-sm-9">
+              <p class="form-control-static" id="uname"></p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-3">设置密码</label>
+            <div class="col-sm-9">
+              <input type="password" class="form-control" id="pwd" placeholder="不重新设置密码无需填写本字段">
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-3">级别</label>
+            <div class="col-sm-9">
+              <input type="range" class="form-control" id="ulevel" min="1" max="{$ulevel-1}"/>
+              级别:<kbd></kbd>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-3">创建时间</label>
+            <div class="col-sm-9">
+              <p class="form-control-static" id="ucreate"></p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-3">最后登录</label>
+            <div class="col-sm-9">
+              <p class="form-control-static" id="ulastlogin"></p>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-3"></label>
+            <div class="col-sm-9">
+              <button type="button" class="btn btn-lg btn-default" onclick="saveUser();">保存修改</button>
+            </div>
+          </div>
+        </form> 
       </div>
+      <div role="tabpanel" class="form-group col-sm-8 user-edit tab-pane" id="userCreator">        
+        <form action="" class="form-horizontal">
+ 
+          <div class="form-group">
+            <label for="" class="col-sm-3">用户名</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" id="uname"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-3">设置密码</label>
+            <div class="col-sm-9">
+              <input type="password" class="form-control" id="pwd"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-3">重复密码</label>
+            <div class="col-sm-9">
+              <input type="password" class="form-control" id="rePwd"/>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="" class="col-sm-3">级别</label>
+            <div class="col-sm-9">
+              <input type="range" class="form-control" id="ulevel" min="1" max="{$ulevel-1}" default="1"/>
+              级别:<kbd></kbd>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="" class="col-sm-3"></label>
+            <div class="col-sm-9">
+              <button type="button" class="btn btn-lg btn-default" onclick="addUser();">新增用户</button>
+            </div>
+          </div>
+        </form> 
+      </div>
+    </div> <!-- ./tab-content -->
   <div class="row">
     <div class="col-sm-12">
-      <ul class="pagination" id="userPager">
+      <ul class="pagination" id="userListPager">
         <li id="pre">
           <a aria-label="上一页">
             <span aria-hidden="true">&laquo;</span>
@@ -232,6 +329,8 @@
   //   e.preventDefault()
   //   $(this).tab('show')
   // })
+  
+  // 管理部门面板按钮功能选择
     $('#dmEditPagerHeader [href="#dmEdit"').click(function(){
       $('#btnChoiceDm').removeAttr('disabled');
       $('#btnChoiceP').removeAttr('disabled');
@@ -240,6 +339,9 @@
       $('#btnChoiceDm').attr('disabled', 'disabled');
       $('#btnChoiceP').removeAttr('disabled');
     });
+
+// 用户搜索功能设定
+    $('#panelManageUser #searchUser').change(searchUser);
   } // initial
 </script>
 <script src="/Public/js/pms_user.js"></script>

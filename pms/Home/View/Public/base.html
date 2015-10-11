@@ -72,10 +72,30 @@
 <script src="/Public/js/jquery.min.js"></script>
 <script src="/Public/js/bootstrap.min.js"></script>
 <script>
+var loaded = {};
   $("document").ready(function(){
     $("#loading").hide();
     initial();    
- })
+ });
+function L(op){
+  var hide = true,i;
+  $('#loading').show();
+  
+  if(typeof(loaded[op]) == "undefined"){
+    loaded[op] = false;
+  }else{
+    loaded[op] = loaded[op] ? false : true;
+  }
+
+  $.each(loaded,function(i,v){
+    if(loaded[i] == false) hide = false;
+    // console.log(i);
+  });
+
+  // console.log(loaded);
+  // console.log('hide:'+hide);
+  if(hide) $('#loading').hide();
+}
 </script>
 <block name="end">
 
