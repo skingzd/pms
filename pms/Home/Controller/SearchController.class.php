@@ -76,8 +76,10 @@ Class SearchController extends Controller{
 		$this->display();
 	}
 
-	public function people($pid = null, $words = null){
+	public function people($pid = null){
 		A('User')->checkLevel();
+
+
 		$this->assign('pid',$pid);
 		$this->display();
 	}

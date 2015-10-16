@@ -4,13 +4,15 @@
  * @return {[type]}      [刷新指定模块]
  */
 function pullData(item) {
-	$.$.ajax({
-			url: '/index.php/Common/getSearch/' item + '/' + pid + '/1/',
+	$.ajax({
+			url: '/index.php/Common/getSearch/' + item + '/' + pid + '/1/',
 			type: 'GET',
 			dataType: 'json',
 		})
 		.done(function(data) {
+
 			console.log(data);
+			fillData(data, item);
 		})
 		.fail(function() {
 			alert('服务器通信失败');
@@ -55,13 +57,18 @@ function fillData(data, item) {
 			$(to + '#' + i).val(e);
 		});	
 	}else{
-		//复制空条目，以ID命名
 		$.each(data, function(i, e) {
+			//复制空条目，以ID命名
 			$(to + '#new')
 				.clone(true)
 				.show()
-				.attr('id', e.);
-				.appendTo(to)
+				.attr('id', e.id)
+				.appendTo(to);
+			$.each(e, function(inputId, value) {
+				//填充数据
+				$(to + ' #' + e.id + ' #' + inputId).val(value);
+			});
+			$(to + ' #' + e.id + ' #recordId').text(e.id);
 		});	
 	}
 	

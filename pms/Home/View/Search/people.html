@@ -56,7 +56,7 @@
 	  <div class="col-sm-12 col-md-6">
 			<div class="form-group">
 				<label for="pid" class="col-sm-3 control-label">身份证</label>
-				<div class="col-sm-9"><input disabled="disabled" type="text" id="pid" class="form-control"></div>
+				<div class="col-sm-9"><input disabled="disabled" type="text" id="id" class="form-control"></div>
 			</div>
 
 			<div class="form-group">
@@ -155,7 +155,7 @@
 				<div class="form-group">
 					<label class="col-sm-3 control-label">职称级别</label>
 					<div class="col-sm-9">
-						<select disabled="disabled" class="form-control" id="titleLevel">
+						<select disabled="disabled" class="form-control" id="level">
 							<option value="1">员级</option>
 							<option value="2">助理级</option>
 							<option value="3">中级</option>
@@ -168,7 +168,7 @@
 				<div class="form-group">
 					<label class="col-sm-3 control-label">职称类别</label>
 					<div class="col-sm-9">
-						<input disabled="disabled" class="form-control" id="titleType" list="titleTypes">
+						<input disabled="disabled" class="form-control" id="type" list="titleTypes">
 						<datalist id="titleTypes">
 							<!-- <option value="XX"> -->
 						</datalist>
@@ -177,8 +177,13 @@
 				</div>
 
 				<div class="form-group">
+					<label class="col-sm-3 control-label">职称专业</label>
+					<div class="col-sm-9"><input disabled="disabled" type="text" id="major" class="form-control"></div>
+				</div>
+
+				<div class="form-group">
 					<label class="col-sm-3 control-label">获得时间</label>
-					<div class="col-sm-9"><input disabled="disabled" type="date" id="titleDate" class="form-control"></div>
+					<div class="col-sm-9"><input disabled="disabled" type="date" id="date" class="form-control"></div>
 				</div>
 
 			</div>
@@ -187,28 +192,34 @@
 
 				<div class="form-group">
 					<label class="col-sm-3 control-label">证书编号</label>
-					<div class="col-sm-9"><input disabled="disabled" type="text" id="titleNo" class="form-control"></div>
+					<div class="col-sm-9"><input disabled="disabled" type="text" id="no" class="form-control"></div>
 				</div>
 
 				<div class="form-group">
 					<label class="col-sm-3 control-label">聘任状态</label>
 					<div class="col-sm-9">
-					<select disabled="disabled" class="form-control" id="titleStatus">
+					<select disabled="disabled" class="form-control" id="status">
 						<option value="0">未聘用</option>
 						<option value="1">在聘</option>
 					</select>
 					</div>
 				</div>
 
+			<div class="form-group">
+				<label class="control-label col-sm-3">最高职称</label>
+				<div class="col-sm-2"><input disabled="disabled" type="checkbox" class="form-control" id="topLevel"></div>
+			</div>
+
 		  	<div class="form-group">
 		  		<label class="col-sm-3 control-label" for="comment">备注</label>
-		  		<div class="col-sm-9"><textarea disabled="disabled" rows="4" class="form-control" id="comment"></textarea></div>
+		  		<div class="col-sm-9"><textarea disabled="disabled" rows="3" class="form-control" id="comment"></textarea></div>
 		  	</div>
 
 			</div>
 		</div> <!-- ./row -->
 		<div class="row">
 			<div class="col-sm-12">
+				<span class="pull-left text-muted" id="recordId"></span>
 				<span class="pull-right text-muted" id="lastEdit">最后由XX编辑于YY编辑</span> 
 			</div>
 		</div>
@@ -252,6 +263,15 @@
 				<div class="col-sm-9"><input disabled="disabled" class="form-control" type="text" id="major"></div>
 			</div>	
 
+			<div class="form-group">
+				<label class="control-label col-sm-3">学习类型</label>
+				<div class="col-sm-9"><input disabled="disabled" class="form-control" type="text" id="type"></div>
+			</div>	
+
+			<div class="form-group">
+				<label class="control-label col-sm-3">最高学历</label>
+				<div class="col-sm-2"><input disabled="disabled" type="checkbox" class="form-control" id="topLevel"></div>
+			</div>
 		</div> <!-- ./col-sm-12 col-md-6 -->
 
 		<div class="col-sm-12 col-md-6">
@@ -273,17 +293,19 @@
 
 			<div class="form-group">
 				<label class="control-label col-sm-3">毕业时间</label>
-				<div class="col-sm-9"><input disabled="disabled" type="date" class="form-control" id="graduateCollege"></div>
+				<div class="col-sm-9"><input disabled="disabled" type="date" class="form-control" id="graduate"></div>
 			</div>
-
+			
 			<div class="form-group">
-				<label class="control-label col-sm-3">最高学历</label>
-				<div class="col-sm-2"><input disabled="disabled" type="checkbox" class="form-control" id="topLevel"></div>
-			</div>
+		  		<label class="col-sm-3 control-label" for="comment">备注</label>
+		  		<div class="col-sm-9"><textarea disabled="disabled" rows="2" class="form-control" id="comment"></textarea></div>
+		  	</div>
+			
 
 		</div><!-- ./col-sm-12 col-md-6 -->
 		<div class="row">
 						<div class="col-sm-12">
+							<span class="pull-left text-muted" id="recordId"></span>
 							<span class="pull-right text-muted" id="lastEdit">最后由XX编辑于YY编辑</span> 
 						</div>
 		</div>
@@ -301,7 +323,7 @@
 				</div>
 				<div class="form-group">
 					<label class="control-label">调动类型</label>
-					<select disabled="disabled" class="form-control" id="transType">
+					<select disabled="disabled" class="form-control" id="moveType">
 						<option value="0">内部调动</option>
 						<option value="1">集团内调动</option>
 						<option value="2">集团外部调动</option>
@@ -337,6 +359,7 @@
 		</div> <!-- ./row -->
 		<div class="row">
 			<div class="col-sm-12">
+				<span class="pull-left text-muted" id="recordId"></span>
 				<span class="pull-right text-muted" id="lastEdit">最后由XX编辑于YY编辑</span> 
 			</div>
 		</div>
@@ -349,9 +372,14 @@
 <!--底部块-->
 <block name="end">
 <script>
-	var pid = '410402196411301536';
+	var pid = '{$pid}';
 	function initial(){
-		$('input,select,textarea').removeAttr('disabled');
+		// $('input,select,textarea').removeAttr('disabled');
+		pullData('base');
+		pullData('title');
+		pullData('edu');
+		pullData('trans');
+
 	}
 </script>
 <script src="/Public/js/pms_viewpeople.js"></script>
