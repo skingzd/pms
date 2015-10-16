@@ -3,40 +3,38 @@ namespace Home\Controller;
 use Think\Controller;
 Class CommonController extends Controller{
 	public $ItemIndex = array(
-		'base'		=>	array('table'=>'People','key'=>'pid'),
-		'edu'		=>	array('table'=>'Education','key'=>'edu_id'),
-		'title'		=>	array('table'=>'Title','key'=>'t_id'),
-		'trans'		=>	array('table'=>'Transfer','key'=>'trans_id'),
+		'base'		=>	array('table'=>'People','key'=>'pid', 'order'=>'pid'),
+		'edu'		=>	array('table'=>'Education','key'=>'edu_id', 'order'=>'date_graduate desc'),
+		'title'		=>	array('table'=>'Title','key'=>'t_id', 'order'=>'date_get_title desc'),
+		'trans'		=>	array('table'=>'Transfer','key'=>'trans_id', 'order'=>'date_move desc'),
 	);
 	
 	public function getSearch($item, $words, $ajax = false){
 		A('User')->checkLevel();
-		$m = M($this->ItemIndex[$item]['table']);
+		$m = D($this->ItemIndex[$item]['table']);
 		$where['status'] = 1;
 		if(strlen($words)<15){//关键词小于15则按照姓名查找
 			$where['name'] = array('LIKE',"%$words%");
 			$result = $m
 				->where($where)
-				->fetchSql()
-				->order( array($this->ItemIndex[$item]['key'] => 'desc') )
-				->select();
-			if($ajax) $this->ajaxReturn($result);
-			dump($result);
-			return $result;
-		}
-		//长度超过人名则身份证匹配
-		$where['pid'] = $words;
-		$result = $m
 				// ->fetchSql()
-				->order( array( $this->ItemIndex[$item]['key'] => 'desc' ) )
-				->where($where)
+				->order( array($this->ItemIndex[$item]['order']) )
 				->select();
-
-		foreach ($variable as $key => $value) {
-			# code...
+		}else{
+			//长度超过人名则身份证匹配
+			$where['pid'] = $words;
+			$result = $m
+					// ->fetchSql()
+					->order( array( $this->ItemIndex[$item]['order']) )
+					->where($where)
+					->select();
 		}
-
-		dump($result);
+		
+		foreach ($result as $key => $value) {
+			//字段隐藏处理
+			$result[$key] = $m->parseFieldsMap($value);
+		}
+		// dump($result);
 		if($ajax) $this->ajaxReturn($result);
 		return $result;
 	}
