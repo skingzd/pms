@@ -76,7 +76,7 @@
 <div class="panel panel-default" id="panelManageUser" style="display:none;">
   <div class="panel-heading">用户管理</div>
   <div class="panel-body">
-    <ul class="nav nav-tabs" role="tablist" id="dmEditPagerHeader">
+    <ul class="nav nav-tabs" role="tablist" id="userEditPagerHeader">
         <li role="presentation" class="active"><a href="#userEditor" aria-controls="userEditor" role="tab" data-toggle="tab">管理用户</a></li>
         <li role="presentation"><a href="#userCreator" aria-controls="userCreator" role="tab" data-toggle="tab">新增用户</a></li>
     </ul>
@@ -325,10 +325,10 @@
       $(this).addClass("active");
     })
     //启用标签选择器
-   //$('#dmEditPagerHeader a').click(function (e) {
-  //   e.preventDefault()
-  //   $(this).tab('show')
-  // })
+   $('#userEditPagerHeader a').click(function (e) {
+      e.preventDefault()
+      $(this).tab('show')
+    })
   
   // 管理部门面板按钮功能选择
     $('#dmEditPagerHeader [href="#dmEdit"').click(function(){
