@@ -19,14 +19,15 @@
    }
    .form-control[disabled]{
    	border:none;
+   	color:#666;
    	box-shadow:none;
    	-webkit-box-shadow:none;
    	background-color: transparent;
    	cursor:auto;
    }
    .record{
-   	margin:20px;
-   	padding:10px;
+   	margin:10px;
+   	padding:10px 20px 10px 10px;
    	border: 1px solid #ddd;
    	border-radius: 3px;
    	/*background-color: #eee;*/
@@ -43,6 +44,15 @@
    .text-muted{
 		color:#bbb;
    }
+   .edit-panel a{
+	margin:0 5px;
+	cursor:pointer;
+	color:#333;
+   }
+   .edit-row{
+   	padding:5px 30px;
+   	min-height: 30px;
+   }
     </style>
   </block>
 </head>
@@ -51,7 +61,16 @@
 <!--顶部块 tp模版用-->
 <block name="content">
 <div class="page-header"><h3>人员基本信息</h3></div>
+
 <div class="infobox form-horizontal" id="baseInfo">
+	<div class="row edit-row">
+		<span class="pull-right edit-panel" id="editTip" style="display:none;"><a onClick="edit(this);">编辑</a></span>
+		<span class="pull-right edit-panel" id="editPanel" style="display:none;">
+			<a onClick="saveRecord(this);">保存</a>
+			<a onClick="cancelEdit(this);">取消</a>
+			<a onClick="delRecord(this);">删除</a>
+		</span>
+	</div>
 	<div class="row">
 	  <div class="col-sm-12 col-md-6">
 			<div class="form-group">
@@ -136,14 +155,23 @@
 	</div>  <!-- ./row -->
 	<div class="row">
 		<div class="col-sm-12">
-			<span class="pull-right text-muted" id="lastEdit">最后由XX编辑于YY编辑</span> 
+			<span class="pull-right text-muted" id="lastEdit"></span> 
 		</div>
 	</div>
 </div>
 <div class="page-header"><h3>职称信息</h3></div>
 <div class="infobox form-horizontal" id="titleInfo">
-
 	<div class="record" id="new" style="display:none">
+
+		<div class="row edit-row">
+			<span class="pull-right edit-panel" id="editTip" style="display:none;"><a onClick="edit(this);">编辑</a></span>
+			<span class="pull-right edit-panel" id="editPanel" style="display:none;">
+				<a onClick="saveRecord(this);">保存</a>
+				<a onClick="cancelEdit(this);">取消</a>
+				<a onClick="delRecord(this);">删除</a>
+			</span>
+		</div>
+
 		<div class="row">
 			<div class="col-sm-12 col-md-6">
 
@@ -220,7 +248,7 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<span class="pull-left text-muted" id="recordId"></span>
-				<span class="pull-right text-muted" id="lastEdit">最后由XX编辑于YY编辑</span> 
+				<span class="pull-right text-muted" id="lastEdit"></span> 
 			</div>
 		</div>
 	</div> <!-- ./record -->
@@ -230,8 +258,17 @@
 <div class="page-header"><h3>学历信息</h3></div>
 <div class="infobox form-horizontal" id="eduInfo">
 	<div class="record row" id="new" style="display:none">
-		<div class="col-sm-12 col-md-6">
 
+		<div class="row edit-row">
+			<span class="pull-right edit-panel" id="editTip" style="display:none;"><a onClick="edit(this);">编辑</a></span>
+			<span class="pull-right edit-panel" id="editPanel" style="display:none;">
+				<a onClick="saveRecord(this);">保存</a>
+				<a onClick="cancelEdit(this);">取消</a>
+				<a onClick="delRecord(this);">删除</a>
+			</span>
+		</div>
+
+		<div class="col-sm-12 col-md-6">
 			<div class="form-group">
 				<label class="control-label col-sm-3">学历级别</label>
 				<div class="col-sm-9">
@@ -306,7 +343,7 @@
 		<div class="row">
 						<div class="col-sm-12">
 							<span class="pull-left text-muted" id="recordId"></span>
-							<span class="pull-right text-muted" id="lastEdit">最后由XX编辑于YY编辑</span> 
+							<span class="pull-right text-muted" id="lastEdit"></span> 
 						</div>
 		</div>
 	</div><!--  ./record row -->
@@ -315,6 +352,15 @@
 <div class="infobox " id="transInfo">
 
 	<div class="record" id="new" style="display:none">
+
+		<div class="row edit-row">
+			<span class="pull-right edit-panel" id="editTip" style="display:none;"><a onClick="edit(this);">编辑</a></span>
+			<span class="pull-right edit-panel" id="editPanel" style="display:none;">
+				<a onClick="saveRecord(this);">保存</a>
+				<a onClick="cancelEdit(this);">取消</a>
+				<a onClick="delRecord(this);">删除</a>
+			</span>
+		</div>
 		<div class="row">
 			<div class="col-sm-3 col-md-3">
 				<div class="form-group">
@@ -360,7 +406,7 @@
 		<div class="row">
 			<div class="col-sm-12">
 				<span class="pull-left text-muted" id="recordId"></span>
-				<span class="pull-right text-muted" id="lastEdit">最后由XX编辑于YY编辑</span> 
+				<span class="pull-right text-muted" id="lastEdit"></span> 
 			</div>
 		</div>
 	</div> <!-- ./record -->
@@ -375,10 +421,25 @@
 	var pid = '{$pid}';
 	function initial(){
 		// $('input,select,textarea').removeAttr('disabled');
-		pullData('base');
-		pullData('title');
-		pullData('edu');
-		pullData('trans');
+		if(pid != 'new'){
+			pullData('base');
+			pullData('title');
+			pullData('edu');
+			pullData('trans');
+
+			$('#baseInfo').hover(function() {
+				if($(this).find('#editPanel').is(':hidden'))	$(this).find('#editTip').show(300);
+			}, function() {
+				if($(this).find('#editPanel').is(':hidden'))	$(this).find('#editTip').hide(300);
+			});
+
+			$(".record").hover(function() {
+				if($(this).find('#editPanel').is(':hidden'))	$(this).find('#editTip').show(300);
+			}, function() {
+				if($(this).find('#editPanel').is(':hidden'))	$(this).find('#editTip').hide(300);
+			});
+		}
+		
 
 	}
 </script>

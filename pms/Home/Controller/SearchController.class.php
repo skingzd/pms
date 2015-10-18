@@ -79,7 +79,6 @@ Class SearchController extends Controller{
 	public function people($pid = null){
 		A('User')->checkLevel();
 
-
 		$this->assign('pid',$pid);
 		$this->display();
 	}

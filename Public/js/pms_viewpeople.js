@@ -4,18 +4,19 @@
  * @return {[type]}      [刷新指定模块]
  */
 function pullData(item) {
+	L(item);
 	$.ajax({
 			url: '/index.php/Common/getSearch/' + item + '/' + pid + '/1/',
 			type: 'GET',
 			dataType: 'json',
 		})
 		.done(function(data) {
-
-			console.log(data);
 			fillData(data, item);
+			L(item);
 		})
 		.fail(function() {
 			alert('服务器通信失败');
+			L(item);
 		})
 		.always(function() {
 			console.log("AJAX DONE");
@@ -57,6 +58,8 @@ function fillData(data, item) {
 			$(to + '#' + i).val(e);
 		});	
 	}else{
+		//清空Info类别列表
+		$(to + "div.record[id!='new']").remove();
 		$.each(data, function(i, e) {
 			//复制空条目，以ID命名
 			$(to + '#new')
@@ -66,10 +69,52 @@ function fillData(data, item) {
 				.appendTo(to);
 			$.each(e, function(inputId, value) {
 				//填充数据
-				$(to + ' #' + e.id + ' #' + inputId).val(value);
+				if(inputId == 'topLevel'){
+					//如果是设置checkBox的投票Level框则设置属性，其他用val设置
+					if(value == '1') $(to + ' #' + e.id + ' #' + inputId).attr('checked', 'checked');
+				}else{
+					$(to + ' #' + e.id + ' #' + inputId).val(value);
+				}
 			});
 			$(to + ' #' + e.id + ' #recordId').text(e.id);
+			if(e.editBy != '' && e.editTime != '')$(to + ' #' + e.id + ' #lastEdit').text('由' + e.editBy + '于' + e.editTime + '编辑.');
 		});	
 	}
 	
+}
+function getRecord(e){
+	var record;
+	if($(e).parents("[class*='record']").length > 0 ){
+		record = $(e).parents("[class*='record']");
+	}else{
+		record = $(e).parents('#baseInfo');
+	}
+	return record;
+}
+
+function getItem(e){
+	var item;
+	item = $(e).parents('.infobox').attr('id');
+	item = item.substr(0, item.length-4);
+	return item;
+}
+
+function edit(e){
+	var record;
+	record = getRecord(e);
+	$(record).find('input,textarea,select').removeAttr('disabled');
+	$(record).find('#editTip').hide(300);
+	$(record).find('#editPanel').show(300);
+
+}
+
+function cancelEdit(e){
+	var item;
+	item = getItem(e);
+	if (item =='base'){
+		$('#baseInfo').find('input,textarea,select').attr('disabled','disabled');
+		$('#baseInfo').find('#editPanel').hide(300);
+		$('#baseInfo').find('#editTip').show(300);
+	}
+	pullData(item);	
 }

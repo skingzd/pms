@@ -38,7 +38,7 @@ function pListLoadFrom(id, page) {
     $("#subTitle").text("共" + p["resultCount"] + "人");
     
     $("tr[id]").click(function() {//实现行点击动作
-      alert($(this).attr('id'));
+      location.href="/index.php/Search/People/"+this.id;
     })
     L('pListLoadFrom');
   });
