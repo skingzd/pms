@@ -11,8 +11,9 @@ function pullData(item) {
 			dataType: 'json',
 		})
 		.done(function(data) {
+			if(item == 'base' && data.length == 0)unfound();
 			fillData(data, item);
-			L(item);
+			L(item);			
 		})
 		.fail(function() {
 			$('#' + item + 'Msg').text('服务器通信失败');
@@ -38,7 +39,8 @@ function buildData(record) {
 	$.each($(record).find('input,textarea,select'), function(i, e) {
 		key = $(e).attr('id');
 		val = $(e).val();
-		if ($(e).is('[type=checkbox]')) val = $(e).val() == 'on' ? 1 : 0;
+		//如果是checkbox
+		if ($(e).is('[type=checkbox]')) val = $(e).is(':checked') ? 1 : 0;
 		data[key] = val;
 	});
 	return data;
@@ -61,7 +63,7 @@ function fillData(data, item) {
 		});
 
 		if (data[0].editBy != '' && data[0].editTime != '') {
-			$(to).find('#lastEdit').text('由' + data[0].editBy + '于' + data[0].editTime + '编辑.');
+			$(to).find('#lastEdit').text('由 ' + data[0].editBy + ' 于 ' + data[0].editTime + ' 编辑.');
 		}
 		makeEditTip(to);
 	} else {
@@ -84,7 +86,7 @@ function fillData(data, item) {
 				}
 			});
 			$(to).find(' #' + e.id + ' #recordId').text(e.id);
-			if (e.editBy != '' && e.editTime != '') $(to).find(' #' + e.id + ' #lastEdit').text('由' + e.editBy + '于' + e.editTime + '编辑.');
+			if (e.editBy != '' && e.editTime != '') $(to).find(' #' + e.id + ' #lastEdit').text('由 ' + e.editBy + ' 于 ' + e.editTime + ' 编辑.');
 		}); //.each
 		makeEditTip(to);
 		$(to).prev('.page-header').find('.add-record').show(300);
@@ -112,6 +114,7 @@ function getItem(e) {
 function edit(e) {
 	var record;
 	record = getRecord(e);
+	$(record).addClass('editing-record');
 	$(record).find('input,textarea,select').removeAttr('disabled');
 	$(record).find('#editTip').hide(300);
 	$(record).find('#editPanel').show(300);
@@ -124,6 +127,7 @@ function cancel(e) {
 	record = getRecord(e);
 
 	if (item == 'base') {
+		$('#baseInfo').removeClass('editing-record');
 		$('#baseInfo').find('input,textarea,select').attr('disabled', 'disabled');
 		$('#baseInfo').find('#editPanel').hide(300);
 		$('#baseInfo').find('#editTip').show(300);
@@ -190,7 +194,10 @@ function del(e) {
 		item = getItem(e);
 		record = getRecord(e);
 		recordId = $(record).attr('id');
-		if (item == 'base') recordId = pid;
+		if (item == 'base') {
+			recordId = pid;
+			if(!confirm("确定删除该人员信息？（同时会删除职称、学历、调动记录信息）"))return false;
+		}
 
 		$.ajax({
 				url: '/index.php/Common/delRecord/' + item + '/' + recordId + '/1/',
@@ -220,8 +227,13 @@ function addRecord(item) {
 		.clone(true)
 		.attr('id', 'newadd')
 		.show(300)
-		.addClass('new-record')
+		.addClass('editing-record')
 		.prependTo($(to));
 	$(newRecord).find('input,textarea,select').removeAttr('disabled');
 	$(newRecord).find('#editPanel').show(300).find("a:contains('删除')").remove();
+}
+
+function unfound(){
+	alert('未找到对应人员');
+	location.href = '/index.php';
 }

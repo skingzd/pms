@@ -50,17 +50,17 @@
 	color:#333;
    }
    .edit-row{
-   	padding:5px 30px;
-   	min-height: 30px;
+   	padding:10px 30px;
+   	min-height: 35px;
    }
    .add-record{
    	margin:5px 20px;
    	color:#777;
    	cursor:pointer;
    }
-   .new-record{
+   .editing-record{
    	border:1px solid #999;
-   	box-shadow: 0 0 20px #666;
+   	box-shadow: 0 0 20px #888;
    }
     </style>
   </block>
@@ -449,7 +449,7 @@
 			pullData('base');
 			pullData('title');
 			pullData('edu');
-			pullData('trans');
+			pullData('trans');	
 		}
 		$(function () {
 	  		$('[data-toggle="tooltip"]').tooltip();

@@ -65,20 +65,38 @@ Class CommonController extends Controller{
 	public function addRecord($item, $pid, $ajax = false){
 		//检查权限
 		A('User')->checkLevel(3);
-		if(1){
-			$d = D($this->ItemIndex[$item]['table']);
-			$m = M('People');
-			//查找姓名，确定人员存在
-			$name = $d->where("pid = '%s'",$pid)->getField('name');
-			if($name == false);
+		if(IS_POST){
+			$d = D($this->ItemIndex[$item]['table']);			
 			//生成数据
 			$data = $d->create();
 
-			// if(isset($data[$this->ItemIndex[$item]['key']])) unset($data[$this->ItemIndex[$item]['key']]);
-			if($pid == 'newadd') unset($data[$this->ItemIndex[$item]['key']]);
-			$data['last_edit'] = session('user');
+			//检查如果新增pid为newadd则为新增base信息
+			if($pid != 'newadd'){
+				//查找姓名，确定人员存在
+				$m = M('People');
+				$name = $d->where("pid = '%s'",$pid)->getField('name');
+				if(!$name) {
+					if($ajax) $this->ajaxReturn('未找到对应人员');
+					return '未找到对应人员';
+				}
+				$data['name'] = $name;
+				$data['pid']  = $pid;
+
+				//表存在*_level_top列时设置人员最高级别则平掉其他记录
+				$topColumn = $item.'_level_top';
+
+				if($data[$topColumn] == 1){
+					$updateMap['pid'] = $pid;
+					$d->where($updateMap)->setField($topColumn,0);
+				}
+			}			
+			$data['last_edit']      = session('user');
 			$data['time_last_edit'] = time();
-			$data['pid'] = $pid;
+			//规范数据
+			foreach ($data as $key => $value) {
+				if($value == '') $data[$key] = null;
+			}
+
 			$result = $d->add($data);
 
 			if($result === false) $msg = '添加失败';
@@ -113,7 +131,6 @@ Class CommonController extends Controller{
 			if($data[$topColumn] == 1){
 				$orign = $d->where($where)->find();
 				$updateMap['pid'] = $orign['pid'];
-				// $updateMap[$topColumn] = 1;
 				$d->where($updateMap)->setField($topColumn,0);
 			} 
 
@@ -138,21 +155,30 @@ Class CommonController extends Controller{
 
 	public function delRecord($item, $id, $ajax = false){
 
-		// $item == 'base' ? A('User')->checkLevel(7) : A('User')->checkLevel(3);
+		$item == 'base' ? A('User')->checkLevel(7) : A('User')->checkLevel(3);
 
-		$m = M($this->ItemIndex[$item]['table']);
-		$where[$this->ItemIndex[$item]['key']] = $id;
-		$result = $m
-				->where($where)
-				// ->fetchSql()
-				->setField('status',0);
-				// ->select();
-
-		$this->ajaxReturn($result);
-
-		if($result === false) $msg = '修改失败';
-		if($result > 0) $msg = "修改成功，影响 $result 条记录.";
-		if($result === 0) $msg = "记录未修改";
+		if($item == 'base') {
+			foreach ($this->ItemIndex as $value) {
+				$m = M($value['table']);
+				$where['pid'] = $id;
+				$result = $m
+						->where($where)
+						->setField('status',0);
+			}
+		}else{
+			$m = M($this->ItemIndex[$item]['table']);
+			$where[$this->ItemIndex[$item]['key']] = $id;
+			$result = $m
+					->where($where)
+					// ->fetchSql()
+					->setField('status',0);
+					// ->select();
+			// $this->ajaxReturn($result);
+		}
+		
+		if($result === false) $msg = '删除失败';
+		if($result > 0) $msg = "删除成功";
+		if($result === 0) $msg = "记录未删除";
 
 		if($ajax) $this->ajaxReturn($msg);
 		return $msg;
@@ -306,7 +332,7 @@ Class CommonController extends Controller{
 	protected function convertTimeStamp(&$record){
 		foreach ($record as $key => $value) {
 			if(strpos($key,'time') !== false){
-				$record[$key] = date("Y-m-d:i:s",$value);
+				$record[$key] = date("Y-m-d i:s",$value);
 			}
 		}
 	}
