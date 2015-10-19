@@ -29,7 +29,7 @@
    	margin:10px;
    	padding:10px 20px 10px 10px;
    	border: 1px solid #ddd;
-   	border-radius: 3px;
+   	border-radius: 5px;
    	/*background-color: #eee;*/
    }
 /*   .record:last-child{
@@ -53,6 +53,15 @@
    	padding:5px 30px;
    	min-height: 30px;
    }
+   .add-record{
+   	margin:5px 20px;
+   	color:#777;
+   	cursor:pointer;
+   }
+   .new-record{
+   	border:1px solid #999;
+   	box-shadow: 0 0 20px #666;
+   }
     </style>
   </block>
 </head>
@@ -60,15 +69,15 @@
 <div class="container">
 <!--顶部块 tp模版用-->
 <block name="content">
-<div class="page-header"><h3>人员基本信息</h3></div>
+<div class="page-header"><h3>人员基本信息 <small id="baseMsg"></small></h3></div>
 
 <div class="infobox form-horizontal" id="baseInfo">
 	<div class="row edit-row">
 		<span class="pull-right edit-panel" id="editTip" style="display:none;"><a onClick="edit(this);">编辑</a></span>
 		<span class="pull-right edit-panel" id="editPanel" style="display:none;">
-			<a onClick="saveRecord(this);">保存</a>
-			<a onClick="cancelEdit(this);">取消</a>
-			<a onClick="delRecord(this);">删除</a>
+			<a onClick="save(this);">保存</a>
+			<a onClick="cancel(this);">取消</a>
+			<a onClick="del(this);">删除</a>
 		</span>
 	</div>
 	<div class="row">
@@ -159,16 +168,21 @@
 		</div>
 	</div>
 </div>
-<div class="page-header"><h3>职称信息</h3></div>
+<div class="page-header">
+	<h3>
+		职称信息 <small id="titleMsg"></small>
+		<span class="pull-right glyphicon glyphicon-plus add-record" data-toggle="tooltip" data-placement="top" title="添加职称信息" onClick="addRecord('title')" style="display:none;"></span>
+	</h3>
+</div>
 <div class="infobox form-horizontal" id="titleInfo">
 	<div class="record" id="new" style="display:none">
 
 		<div class="row edit-row">
 			<span class="pull-right edit-panel" id="editTip" style="display:none;"><a onClick="edit(this);">编辑</a></span>
 			<span class="pull-right edit-panel" id="editPanel" style="display:none;">
-				<a onClick="saveRecord(this);">保存</a>
-				<a onClick="cancelEdit(this);">取消</a>
-				<a onClick="delRecord(this);">删除</a>
+				<a onClick="save(this);">保存</a>
+				<a onClick="cancel(this);">取消</a>
+				<a onClick="del(this);">删除</a>
 			</span>
 		</div>
 
@@ -255,16 +269,21 @@
 </div>
 
 
-<div class="page-header"><h3>学历信息</h3></div>
+<div class="page-header">
+	<h3>
+		学历信息 <small id="eduMsg"></small>
+		<span class="pull-right glyphicon glyphicon-plus add-record" data-toggle="tooltip" data-placement="top" title="添加学历信息" onClick="addRecord('edu')" style="display:none;"></span>
+	</h3>
+</div>
 <div class="infobox form-horizontal" id="eduInfo">
 	<div class="record row" id="new" style="display:none">
 
 		<div class="row edit-row">
 			<span class="pull-right edit-panel" id="editTip" style="display:none;"><a onClick="edit(this);">编辑</a></span>
 			<span class="pull-right edit-panel" id="editPanel" style="display:none;">
-				<a onClick="saveRecord(this);">保存</a>
-				<a onClick="cancelEdit(this);">取消</a>
-				<a onClick="delRecord(this);">删除</a>
+				<a onClick="save(this);">保存</a>
+				<a onClick="cancel(this);">取消</a>
+				<a onClick="del(this);">删除</a>
 			</span>
 		</div>
 
@@ -348,7 +367,12 @@
 		</div>
 	</div><!--  ./record row -->
 </div>
-<div class="page-header"><h3>调动记录</h3></div>
+<div class="page-header">
+	<h3>
+		调动记录 <small id="transMsg"></small>
+		<span class="pull-right glyphicon glyphicon-plus add-record" data-toggle="tooltip" data-placement="top" title="添加调动信息" onClick="addRecord('trans')" style="display:none;"></span>
+	</h3>
+</div>
 <div class="infobox " id="transInfo">
 
 	<div class="record" id="new" style="display:none">
@@ -356,9 +380,9 @@
 		<div class="row edit-row">
 			<span class="pull-right edit-panel" id="editTip" style="display:none;"><a onClick="edit(this);">编辑</a></span>
 			<span class="pull-right edit-panel" id="editPanel" style="display:none;">
-				<a onClick="saveRecord(this);">保存</a>
-				<a onClick="cancelEdit(this);">取消</a>
-				<a onClick="delRecord(this);">删除</a>
+				<a onClick="save(this);">保存</a>
+				<a onClick="cancel(this);">取消</a>
+				<a onClick="del(this);">删除</a>
 			</span>
 		</div>
 		<div class="row">
@@ -426,21 +450,10 @@
 			pullData('title');
 			pullData('edu');
 			pullData('trans');
-
-			$('#baseInfo').hover(function() {
-				if($(this).find('#editPanel').is(':hidden'))	$(this).find('#editTip').show(300);
-			}, function() {
-				if($(this).find('#editPanel').is(':hidden'))	$(this).find('#editTip').hide(300);
-			});
-
-			$(".record").hover(function() {
-				if($(this).find('#editPanel').is(':hidden'))	$(this).find('#editTip').show(300);
-			}, function() {
-				if($(this).find('#editPanel').is(':hidden'))	$(this).find('#editTip').hide(300);
-			});
 		}
-		
-
+		$(function () {
+	  		$('[data-toggle="tooltip"]').tooltip();
+		})
 	}
 </script>
 <script src="/Public/js/pms_viewpeople.js"></script>

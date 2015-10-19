@@ -30,10 +30,13 @@ Class CommonController extends Controller{
 					->select();
 		}
 		
-		foreach ($result as $key => $value) {
-			//字段隐藏处理
+		//字段隐藏、时间戳还原日期处理
+		foreach ($result as $key => $value) {	
+			$this->convertTimeStamp($value);
+				
 			$result[$key] = $m->parseFieldsMap($value);
 		}
+	
 		// dump($result);
 		if($ajax) $this->ajaxReturn($result);
 		return $result;
@@ -59,25 +62,42 @@ Class CommonController extends Controller{
 		return $result;
 	}
 
-	public function addRecord($item, $ajax = false){
+	public function addRecord($item, $pid, $ajax = false){
 		//检查权限
 		A('User')->checkLevel(3);
-		if(!IS_POST) $this->redirect("Index/index");
-		$m = M( $this->ItemIndex[$item]['table'] );
-		$data = $m->create();
-		$data['last_edit'] = session('user');
-		$data['time_last_edit'] = time();
-		$resultId = $m->add($data);
-		if($ajax) $this->ajaxReturn($resultId);
-		return $resultId;
+		if(1){
+			$d = D($this->ItemIndex[$item]['table']);
+			$m = M('People');
+			//查找姓名，确定人员存在
+			$name = $d->where("pid = '%s'",$pid)->getField('name');
+			if($name == false);
+			//生成数据
+			$data = $d->create();
+
+			// if(isset($data[$this->ItemIndex[$item]['key']])) unset($data[$this->ItemIndex[$item]['key']]);
+			if($pid == 'newadd') unset($data[$this->ItemIndex[$item]['key']]);
+			$data['last_edit'] = session('user');
+			$data['time_last_edit'] = time();
+			$data['pid'] = $pid;
+			$result = $d->add($data);
+
+			if($result === false) $msg = '添加失败';
+			if($result > 0) $msg = "添加成功，记录编号$resultId.";
+			if($result === 0) $msg = "记录未修改";
+
+			if($ajax) $this->ajaxReturn($msg);
+			return $resultId;
+		}
+		
 	}
 
 	public function editRecord($item, $id, $ajax = false){
 		A('User')->checkLevel(3);
-		$m = M($this->ItemIndex[$item]['table']);//初始化对应表的模型
+		$d = D($this->ItemIndex[$item]['table']);//初始化对应表的模型
 		//如果传入POST数据则进行数据库操作修改
 		if(IS_POST){
-			$data = $m -> create();
+			$data = $d -> create();
+			
 			unset($data['pid']);//不更新PID
 			unset($data['name']);//不更新NAME
 			unset($data[$this->ItemIndex[$item]['key']]);//不更新KEY
@@ -88,34 +108,54 @@ Class CommonController extends Controller{
 
 			//表存在*_level_top列时
 			$topColumn = $item.'_level_top';
+
 			//设置人员最高级别则平掉其他记录
-			if($data[$topColumn] = 1){
-				$orign = $m->where($where)->find();
+			if($data[$topColumn] == 1){
+				$orign = $d->where($where)->find();
 				$updateMap['pid'] = $orign['pid'];
-				$updateMap[$topColumn] = 1;
-				$m->where($updateMap)->setField($topColumn,0);
+				// $updateMap[$topColumn] = 1;
+				$d->where($updateMap)->setField($topColumn,0);
 			} 
 
-			$result = $m->where($where)->save();
-			$result['_msg']='修改成功';
-			if(!$result) $result['_msg']='修改失败';
-			if($ajax) $this->ajaxReturn($result);
-			return $result;
+			//规范所有空字段
+			foreach ($data as $key => $value) {
+				if($value == '') $data[$key] = null;
+			}
+
+			$result = $d
+					->where($where)
+					// ->fetchSql()
+					->save($data);
+
+			// $this->ajaxReturn($result);
+			if($result === false) $msg = '修改失败';
+			if($result > 0) $msg = "修改成功，影响 $result 条记录.";
+			if($result === 0) $msg = "记录未修改";
+			if($ajax) $this->ajaxReturn($msg);
+			return $msg;
 		}
 	}
 
 	public function delRecord($item, $id, $ajax = false){
-		A('User')->checkLevel(3);
+
+		// $item == 'base' ? A('User')->checkLevel(7) : A('User')->checkLevel(3);
+
 		$m = M($this->ItemIndex[$item]['table']);
-		//如果传入POST数据则进行数据库操作修改
-		if(IS_POST){
-			$where[$this->ItemIndex[$item]['key']] = $id;
-			$result = $m->where($where)->setField('status',0);
-			$result['_msg']='删除成功';
-			if(!$result) $result['_msg']='删除失败';
-			if($ajax) $this->ajaxReturn($result);
-			return $result;
-		}
+		$where[$this->ItemIndex[$item]['key']] = $id;
+		$result = $m
+				->where($where)
+				// ->fetchSql()
+				->setField('status',0);
+				// ->select();
+
+		$this->ajaxReturn($result);
+
+		if($result === false) $msg = '修改失败';
+		if($result > 0) $msg = "修改成功，影响 $result 条记录.";
+		if($result === 0) $msg = "记录未修改";
+
+		if($ajax) $this->ajaxReturn($msg);
+		return $msg;
 	}
 
 	public function getDm($id = 0, $getChild = false, $ajax = false){
@@ -262,5 +302,12 @@ Class CommonController extends Controller{
 				$result['调动'] = $m->table('__TRANSFER__')->where("pid='%s'",$id)->setField('name',$newName);
 			}
 			return $result;
+	}
+	protected function convertTimeStamp(&$record){
+		foreach ($record as $key => $value) {
+			if(strpos($key,'time') !== false){
+				$record[$key] = date("Y-m-d:i:s",$value);
+			}
+		}
 	}
 }

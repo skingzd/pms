@@ -5,10 +5,10 @@ class DepartmentController extends Controller{
 
 	public function index(){
 		//部门管理首页
-		echo '部门浏览、有权限则显示部门管理界面';
+		// echo '部门浏览、有权限则显示部门管理界面';
 		A('User')->checkLevel();
-		$dmTree = A('Common')->getDmTree(0);
-		dump($dmTree);
+		// $dmTree = A('Common')->getDmTree(0);
+		// dump($dmTree);
 	}
 
 	public function search($words){
