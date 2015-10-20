@@ -4,8 +4,8 @@ use Think\Controller;
 class IndexController extends Controller {
 
    	public $eduLevelIndex = array(0=>'初中及以下',1=>'高中',2=>'技校',3=>'中专',4=>'大专',5=>'本科',6=>'研究生',7=>'博士');
-    public $postLevelIndex = array(1 => '副科级',2 => '正科级',3 =>'副总级',4=>'副处级',5=>'正处级',);
-    public $titleLevelIndex = array(1 =>'员级', 2=>'助理级' ,3 =>'中级', 4 =>'高级', 5=>'教授级') ;
+    public $postLevelIndex = array(0 => '无级别', 1 => '副科级',2 => '正科级',3 =>'副总级',4=>'副处级',5=>'正处级',);
+    public $titleLevelIndex = array(0 => '无级别', 1 =>'员级', 2=>'助理级' ,3 =>'中级', 4 =>'高级', 5=>'教授级') ;
     public $postTypeIndex = array('0' => '常规', '1' => '高级别低职务', '-1' => '虚职');
     
 
@@ -20,7 +20,7 @@ class IndexController extends Controller {
     	//人员信息总览
     	$p = M('People');
         //按照人员级别统计
-        $levelCount = $p->field('post_level level,count(1) count')->order('post_level desc')->group('post_level')->select();
+        $levelCount = $p->field('post_level as level,count(1) count')->order('post_level desc')->group('post_level')->select();
     	foreach ( $levelCount as $value) {
     		$data[ $this->postLevelIndex[$value['level']] ] = $value['count'];
     	}

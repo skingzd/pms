@@ -214,7 +214,7 @@
       <div class="form-group col-sm-5" id="dmInfo">
         <div class="page-header">
           <h4>选择并查看部门信息</h4>
-          <button class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#selectorModal" onclick="listDm('#dmSelector', 0, '四矿', choiceDm, 'choiceDm');" id="btnChoiceDm">选择部门</button>
+          <button class="btn btn-default btn-sm" type="button" onClick="listDm('#dmSelector', 0, '四矿', choiceDm, 'choiceDm');" id="btnChoiceDm">选择部门</button>
         </div>
         <input type="hidden" name="dmId" id="dmId" >
 
@@ -234,7 +234,7 @@
     <div class="form-group col-sm-5" id="parentDmInfo">
       <div class="page-header">
         <h4>父级部门信息</h4>
-        <button class="btn btn-default btn-sm" type="button" data-toggle="modal" data-target="#selectorModal" onclick="listDm('#dmSelector', 0, '四矿', choiceDm, 'choiceP');" id="btnChoiceP">选择父级部门</button>
+        <button class="btn btn-default btn-sm" type="button" onclick="listDm('#dmSelector', 0, '四矿', choiceDm, 'choiceP');" id="btnChoiceP">选择父级部门</button>
       </div>
       <input type="hidden" name="dmId" id="dmId" >
 
@@ -345,7 +345,7 @@
   } // initial
 </script>
 <script src="/Public/js/pms_user.js"></script>
-<script src="/Public/js/pms_dm_selecter.js"></script>
+<script src="/Public/js/pms_dm_selector.js"></script>
 <script src="/Public/js/pms_pager.js"></script>
 
 </block>

@@ -99,7 +99,7 @@ function getRecord(e) {
 	if ($(e).parents("[class*='record']").length > 0) {
 		record = $(e).parents("[class*='record']");
 	} else {
-		record = $(e).parents('#baseInfo');
+		record = $('#baseInfo');
 	}
 	return record;
 }
@@ -117,7 +117,8 @@ function edit(e) {
 	$(record).addClass('editing-record');
 	$(record).find('input,textarea,select').removeAttr('disabled');
 	$(record).find('#editTip').hide(300);
-	$(record).find('#editPanel').show(300);
+	$(record).find('#editPanel').show(300).find('#btnShowSelector').show(300);
+	$(record).find('#btnShowSelector').show(300);
 
 }
 
@@ -129,7 +130,8 @@ function cancel(e) {
 	if (item == 'base') {
 		$('#baseInfo').removeClass('editing-record');
 		$('#baseInfo').find('input,textarea,select').attr('disabled', 'disabled');
-		$('#baseInfo').find('#editPanel').hide(300);
+		$('#baseInfo').find('#editPanel').hide(300).find('#btnShowSelector').hide(300);
+		$('#baseInfo').find('#btnShowSelector').hide(300);
 		$('#baseInfo').find('#editTip').show(300);
 	}
 	if ($(record).attr('id') == 'newadd') {
@@ -150,6 +152,10 @@ function save(e) {
 	//if action is addNew,change the submit url
 	if (recordId == 'newadd') url = '/index.php/Common/addRecord/' + item + '/'+ pid +'/1';
 
+	$.each(data, function(index, val) {
+		 if(val == '' || val =="0000-00-00") data[index] = null;
+	});
+
 	L(item + recordId);
 	$.ajax({
 			url: url,
@@ -159,6 +165,7 @@ function save(e) {
 		.done(function(msg) {
 			$(record).removeClass('add-record');
 			alert(msg);
+			if(pid == 'newadd') location.href = '/index.php/People/view/' + data.pid;
 			// console.log(msg);
 			cancel(e);
 		})
@@ -236,4 +243,30 @@ function addRecord(item) {
 function unfound(){
 	alert('未找到对应人员');
 	location.href = '/index.php';
+}
+
+function prepareAddNew(){
+	//隐藏其他项目
+	$('#baseInfo').nextAll('.infobox, .page-header').hide();
+	// 设置输入可用
+	edit($('#baseInfo'));
+	// 设置编辑控制面板
+	$('#baseInfo #editPanel').show(300).find("a:contains('删除')").remove();
+	$('#baseInfo #editPanel').find("a:contains('取消')").unbind('onClick').click(function() {
+		window.history.go(-1);
+	});
+	$('#navbar #newadd').addClass('active');
+}
+
+function choiceDm(dmId, dmName, addsOn){
+	$('#selectorModal button').last().click({'dmId':dmId,'dmName':dmName},function(e) {
+		$('#baseInfo #dmId').val(e.data.dmId);
+		$('#baseInfo #dm').val(e.data.dmName);
+	});
+}
+
+function checkData(e){
+	var item, record;
+	item = getItem(e);
+	record = getRecord(e);
 }

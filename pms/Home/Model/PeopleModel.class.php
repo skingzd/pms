@@ -5,7 +5,7 @@ use Think\Model;
 class PeopleModel extends Model{
 	protected $_map = array(
 				'id'        => 'pid',
-				'dm'		=> 'dm_id',
+				'dmId'		=> 'dm_id',
 				'workdate'  => 'date_startwork',
 				'postLevel' => 'post_level',
 				'postType'  => 'post_type',

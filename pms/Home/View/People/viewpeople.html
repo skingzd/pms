@@ -120,6 +120,15 @@
 	  </div> <!-- ./col-sm-12 col-md-6 -->
 	  <div class="col-sm-12 col-md-6">
 
+		<div class="form-group">
+	  		<label class="col-sm-3 control-label" for="post">所属部门</label>
+	  		<div class="col-sm-6">
+	  			<input disabled="disabled" type="text" id="dm" class="form-control">
+	  			<input disabled="disabled" type="hidden" id="dmId">
+	  		</div>
+	  		<div class="col-sm-3"><button class="btn btn-default" id="btnShowSelector" type="button" onClick="listDm('#dmSelector', 0, '四矿', choiceDm);" style="display:none;">选择部门</button></div>
+	  	</div>
+
 	  	<div class="form-group">
 	  		<label class="col-sm-3 control-label" for="post">职务</label>
 	  		<div class="col-sm-9"><input disabled="disabled" type="text" id="post" class="form-control"></div>
@@ -157,7 +166,7 @@
 
 	  	<div class="form-group">
 	  		<label class="col-sm-3 control-label" for="comment">备注</label>
-	  		<div class="col-sm-9"><textarea disabled="disabled" rows="4" class="form-control" id="comment"></textarea></div>
+	  		<div class="col-sm-9"><textarea disabled="disabled" rows="3" class="form-control" id="comment"></textarea></div>
 	  	</div>
 
 	  </div>  <!-- ./col-sm -->
@@ -436,7 +445,32 @@
 	</div> <!-- ./record -->
 
 </div> <!-- ./infobox -->
-		
+
+<!-- Modal -->
+<div class="modal fade" id="selectorModal" tabindex="-1" role="dialog" aria-labelledby="dmSelector">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h3 class="modal-title" id="dmSelector1">部门选择
+          <!-- <small>当前选择为：</small> -->
+          <small id="dmNowChoice"></small>
+        </h3>
+        </div>
+        <div class="modal-body dmSelector"  id="dmSelector">
+          <!-- 部门选择其输出位置 -->
+        </div>
+        <div class="modal-footer">
+          <input type="hidden" id="dmId" />
+          <input type="hidden" id="dmName" />
+          <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+          <button type="button" class="btn btn-primary" id="choiceButton">选择该部门</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div> <!-- /.panelManageDm -->
+
 </block>
 </div><!--/container-->
 <!--底部块-->
@@ -444,19 +478,21 @@
 <script>
 	var pid = '{$pid}';
 	function initial(){
-		// $('input,select,textarea').removeAttr('disabled');
-		if(pid != 'new'){
+		//选择预览人员信息或者新增人员
+		if(pid == 'newadd'){
+			prepareAddNew();
+		}else{
 			pullData('base');
 			pullData('title');
 			pullData('edu');
 			pullData('trans');	
 		}
-		$(function () {
-	  		$('[data-toggle="tooltip"]').tooltip();
-		})
+		//设置工具提示条可用
+		$(function () {$('[data-toggle="tooltip"]').tooltip();})
 	}
 </script>
 <script src="/Public/js/pms_viewpeople.js"></script>
+<script src="/Public/js/pms_dm_selector.js"></script>
 </block>
 </body>  
 </html>

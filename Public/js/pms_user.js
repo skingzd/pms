@@ -42,7 +42,7 @@ function getDm(e) {
 	if (e.data.to == "p") to = "#parentDmInfo";
 	dmId = e.data.dmId;
 	$(to + ' input,textarea').val('');
-	$("#selectorModal").modal('hide');
+	// $("#selectorModal").modal('hide');
 	$(to + " #dmId").val('加载中...');
 
 	$.get('/index.php/Common/getDm/' + dmId + '/0/1', function(data) {
@@ -64,7 +64,7 @@ function getDm(e) {
 function getP(dmId) {
 	var to = "#parentDmInfo";
 	L('getP');
-	$("#selectorModal").modal('hide');
+	// $("#selectorModal").modal('hide');
 	$(to + " #dmId").val('加载中...');
 	$.get('/index.php/Common/getDm/' + dmId + '/0/1', function(dm) {
 		// alert(dm.by_p);
@@ -75,7 +75,6 @@ function getP(dmId) {
 			$(to + " #dmId").val(dm.by_p);
 			$(to + " #dateSetup").val(p.date_setup);
 			$(to + " #comment").val(p.comment);
-			loading('dm');
 		});
 		L('getP');
 	});

@@ -183,7 +183,7 @@ tr{
 							<input type="radio" name="sex" value="0" id="sex-f" />女性
 						</label>
 						<label class="btn btn-default active">
-							<input type="radio" name="sex" value="all" id="sex"  checked="checked"/>全部
+							<input type="radio" name="sex" value="" id="sex"  checked="checked"/>全部
 						</label>
 					</div>
 				</div>
@@ -203,7 +203,7 @@ tr{
 			</div>
 			<div class="col-sm-1"></div>
 			<div class="col-xs-12 col-sm-12">
-				<button type="submit" class="btn btn-default"> <span class="glyphicon glyphicon-search"></span> 筛选人员 </button>
+				<button type="submit" class="btn btn-default" id="btnSearch"> <span class="glyphicon glyphicon-search"></span> 筛选人员 </button>
 			</div>
 				
 					
@@ -286,13 +286,16 @@ function initial(){
   $("#navbar li#search").addClass("active");
   if(resultCount >=0 ) {
   	makePager("#pager", nowPage, resultCount, perPage, goPage, null);
-	  $("tr").click(function(){
+	  $("tr[id]").click(function(){
 	  	location.href = "/index.php/People/view/"+$(this).attr("id");
 	  })
 	}
-
   if(map != "") $("table").removeClass("hidden");
   setChecked();
+  //点击搜索时页码重置为1
+  $('#btnSearch').click(function() {
+  	$('#page').val(1);
+  });
 }
 </script>
 <script src="/Public/js/pms_pager.js"></script>

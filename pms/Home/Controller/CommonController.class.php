@@ -11,11 +11,11 @@ Class CommonController extends Controller{
 	
 	public function getSearch($item, $words, $ajax = false){
 		A('User')->checkLevel();
-		$m = D($this->ItemIndex[$item]['table']);
+		$d = D($this->ItemIndex[$item]['table']);
 		$where['status'] = 1;
 		if(strlen($words)<15){//关键词小于15则按照姓名查找
 			$where['name'] = array('LIKE',"%$words%");
-			$result = $m
+			$result = $d
 				->where($where)
 				// ->fetchSql()
 				->order( array($this->ItemIndex[$item]['order']) )
@@ -23,18 +23,23 @@ Class CommonController extends Controller{
 		}else{
 			//长度超过人名则身份证匹配
 			$where['pid'] = $words;
-			$result = $m
+			$result = $d
 					// ->fetchSql()
 					->order( array( $this->ItemIndex[$item]['order']) )
 					->where($where)
 					->select();
+			if($item == 'base'&& $result){
+				$dm = $this->getDm($result[0]['dm_id']);
+				$result[0]['dm'] = $dm['n'];
+			}
+			
 		}
 		
 		//字段隐藏、时间戳还原日期处理
 		foreach ($result as $key => $value) {	
 			$this->convertTimeStamp($value);
 				
-			$result[$key] = $m->parseFieldsMap($value);
+			$result[$key] = $d->parseFieldsMap($value);
 		}
 	
 		// dump($result);
@@ -71,7 +76,12 @@ Class CommonController extends Controller{
 			$data = $d->create();
 
 			//检查如果新增pid为newadd则为新增base信息
-			if($pid != 'newadd'){
+			if($pid == 'newadd'){
+				if($this->getRecord('base',$data['pid'])){
+					if($ajax) $this->ajaxReturn('身份证号码重复');
+					return '身份证号码重复';
+				}
+			}else{
 				//查找姓名，确定人员存在
 				$m = M('People');
 				$name = $d->where("pid = '%s'",$pid)->getField('name');
@@ -89,7 +99,7 @@ Class CommonController extends Controller{
 					$updateMap['pid'] = $pid;
 					$d->where($updateMap)->setField($topColumn,0);
 				}
-			}			
+			}
 			$data['last_edit']      = session('user');
 			$data['time_last_edit'] = time();
 			//规范数据
@@ -100,7 +110,7 @@ Class CommonController extends Controller{
 			$result = $d->add($data);
 
 			if($result === false) $msg = '添加失败';
-			if($result > 0) $msg = "添加成功，记录编号$resultId.";
+			if($result > 0) $msg = "添加成功，记录编号$result.";
 			if($result === 0) $msg = "记录未修改";
 
 			if($ajax) $this->ajaxReturn($msg);

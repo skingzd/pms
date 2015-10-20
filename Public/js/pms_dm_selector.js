@@ -8,7 +8,7 @@
  * @return {[type]}           [no return]
  */
 function listDm(listTo, defaultId, rootName, callFn, addsOn){
-
+	$(listTo).parents('.modal').modal('show');
 	var txt="<li id='0' class='open'><i></i><a href='javascript:void(0)'>"+rootName+"</a></li>\n";;
 	L('listDm');
 	$(listTo).empty();
@@ -50,17 +50,21 @@ function listDm(listTo, defaultId, rootName, callFn, addsOn){
 			//选中文字动作
 			$(listTo+" a").removeClass();
 			$(this).addClass('active');
+			//选择按钮点击动作
 			$(listTo).parent().find("button").last().text("选择->"+$(this).text());
-		})
-		.dblclick(function() {
-			/* 设置文字双击动作 */
-			if($(this).parent("li").attr('class') == 'closed'){
-				$(this).parent("li").attr('class',"open");
-				$(this).parent("li").next("ul").show(300);
-			}else if($(this).parent("li").attr('class') == 'open'){
-				$(this).parent("li").attr('class',"closed");
-				$(this).parent("li").next("ul").hide(300);
-			}
+			})
+			.dblclick(function() {
+				/* 设置文字双击动作 */
+				if($(this).parent("li").attr('class') == 'closed'){
+					$(this).parent("li").attr('class',"open");
+					$(this).parent("li").next("ul").show(300);
+				}else if($(this).parent("li").attr('class') == 'open'){
+					$(this).parent("li").attr('class',"closed");
+					$(this).parent("li").next("ul").hide(300);
+				}
+			});
+		$(listTo).parent().find("button").last().click(function() {
+			$(listTo).parents('.modal').modal('hide');
 		});
 		if(typeof(callFn) == "function"){
 			//如果附加变量不存在则指定为空

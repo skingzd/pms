@@ -20,29 +20,31 @@ Class SearchController extends Controller{
 		foreach ($where as $k => $v) {
 			if(is_array($v)){
 			//如果数组的任何参数未设置或为空则删除当前条件
-				// if(is_null($v[0]) || is_null($v[1])) unset($where[$k]);
-				if($v[0]=="" || $v[1]=="" ) unset($where[$k]);
+				if($v[0] == '' || $v[1] == '') unset($where[$k]);
 			}
 			// 参数为空则删除条件
-			// if(is_null($v) || $v == "" ) unset($where[$k]);
 			if( $v == "" ) unset($where[$k]);
 		}
 		//页码设置规范
 		if((int)$page < 1) $page = 1;
 
 		//例外处理name条件因为%模糊查询,处理sex条件如果为all则去除sex筛选
-		if($i['sex'] == "all") unset($where['sex']);
+		if($i['sex'] == "") unset($where['sex']);
 		if(trim($i['name']) == "") unset($where['name']);
 		// dump($where);
 		if(count($where)){	
 			$p = M("Summary");
+
 			$postLevelIndex = A("Index")->postLevelIndex;
 			$sexIndex = array( "0" => "女", "1" => "男" );
+
 			$resultCount = $p->where($where)->count(1);
 			$result = $p->where($where)
 						->order("dm_id,post_level desc,name")
+						// ->fetchSql()
 						->page($page,$perPage)
 						->select();
+						// dump($result);
 			foreach ($result as $k => $v){
 				$result[$k]["post_level"] = $postLevelIndex[$v["post_level"]];
 				$result[$k]["sex"] = $sexIndex[$v["sex"]];

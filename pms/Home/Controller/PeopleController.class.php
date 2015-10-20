@@ -9,7 +9,7 @@ Class PeopleController extends Controller{
 		$this->display('viewpeople');
 	}
 
-	public function addnew(){
+	public function addNew(){
 		A('User')->checkLevel(5);
 
 		$this->assign('pid','newadd');
