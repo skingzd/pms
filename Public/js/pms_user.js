@@ -1,7 +1,7 @@
 function goPanel(panel) {
 	$("div[id^=panel]").hide();
 	$("div[id^=panel" + panel + "]").show(200);
-	if (panel == 'ManageUser'){
+	if (panel == 'ManageUser') {
 		listUser(1);
 		$('#userEditor #ulevel').change(function() {
 			$(this).next('kbd').text($(this).val());
@@ -9,7 +9,7 @@ function goPanel(panel) {
 		$('#userCreator #ulevel').change(function() {
 			$(this).next('kbd').text($(this).val());
 		});
-	} 
+	}
 }
 
 function choiceDm(dmId, dmName, addsOn) {
@@ -18,19 +18,23 @@ function choiceDm(dmId, dmName, addsOn) {
 	if (typeof(addsOn) == "undefined") return false;
 	// var nowDm = "#dmNowChoice";
 	// $(nowDm).empty().text(dmName);
-	if (addsOn == "choiceDm") $("#choiceButton").unbind('click').click({
-		"dmId": dmId,
-		"to": "dm"
-	}, getDm);
+	if (addsOn == "choiceDm") $("#choiceButton")
+		// .unbind('click')
+		.click({
+			"dmId": dmId,
+			"to": "dm"
+		}, getDm);
 	if (addsOn == "choiceP") {
 		if ($("#dmInfo #dmName").val() == "") {
 			alert("指定活动部门后选择父级部门");
 			$("#selectorModal").modal('hide');
 		} else {
-			$("#choiceButton").unbind('click').click({
-				"dmId": dmId,
-				"to": "p"
-			}, getDm);
+			$("#choiceButton")
+				// .unbind('click')
+				.click({
+					"dmId": dmId,
+					"to": "p"
+				}, getDm);
 		}
 	}
 }
@@ -389,7 +393,7 @@ function addUser() {
 		})
 		.done(function(msg) {
 			alert(msg);
-			$(from+'input').val('');
+			$(from + 'input').val('');
 			listUser(1);
 		})
 		.fail(function() {

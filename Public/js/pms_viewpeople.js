@@ -233,7 +233,7 @@ function addRecord(item) {
 	newRecord = $(to).find('#new')
 		.clone(true)
 		.attr('id', 'newadd')
-		.show(300)
+		.show()
 		.addClass('editing-record')
 		.prependTo($(to));
 	$(newRecord).find('input,textarea,select').removeAttr('disabled');
