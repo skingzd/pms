@@ -1,0 +1,142 @@
+<extend name="Public:base" />
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>PMS</title>
+	<link href="/Public/css/bootstrap.min.css" rel="stylesheet">
+	<link href="/Public/css/pms.css" rel="stylesheet">
+  <block name="head">
+  	<style>
+  	.msg{
+  		margin:  20px 15px;
+  		padding: 5px 25px;
+  		border:1px solid #aaa;
+  		border-radius: 5px;
+  		color: #555;
+  		background-color: #ddd;
+  	}
+  	.dmbox{
+  		margin:15px;
+  		padding:10px 25px;
+  		border:1px solid #ccc;
+  		border-radius: 5px;
+  		min-height: 30px;
+  		background-color: #eee;
+  	}
+  	.dmbox>ul{
+		
+  	}
+
+  	.dmbox>ul>li{
+  		display:inline-block;
+  		padding: 3px 10px;
+  		min-width: 100px;
+  	}
+  	tr[id]{
+  		cursor: pointer;
+  	}
+  	</style>
+  </block>
+</head>
+<body>
+<div class="container">
+<!--顶部块 tp模版用-->
+
+<block name="content">
+<div class="container content-min-height">
+		<div class="msg">提示：{$msg}</div>
+	<div class="dmbox">
+		<p>相关部门:</p>
+		<ul>
+			<foreach name="dm" key="id" item="name">
+				<li><a href="../../Index/department/{$id}">{$name}</a></li>
+			</foreach>
+		</ul>
+	</div>
+
+	<table class="table table-striped table-hover">
+		<caption><h3 id="pListTitle">搜索结果 <small id="subTitle"> 共找到 {$resultCount|default="0"} 人复合条件.</small></h4></caption>
+		<thead>
+		  <tr>
+		    <th scope="row">#</th>
+		    <th>姓名</th>
+		    <th>性别</th>
+		    <th>出生年月</th>
+		    <th>参加工作时间</th>
+		    <th>职务</th>
+		    <th>职务级别</th>
+		  </tr>
+
+		</thead>
+
+		<tbody id="pList">
+		<!-- 人员列表区域 -->
+		<foreach name="record" item="val">
+		  <tr id="{$val['id']}">
+		    <th scope="row">{$val["no"]}</th>
+		    <td>{$val["name"]}</td>
+		    <td>{$val["sex"]}</td>
+		    <td>{$val["birthday"]}</td>
+		    <td>{$val["workdate"]}</td>
+		    <td>{$val["post"]}</td>
+		    <td>{$val["postLevel"]}</td>
+		  </tr>
+		</foreach>
+		</tbody>
+
+	</table>
+	<div class="row">
+		<div class="col-sm-10">
+			<nav class="pull-right">
+		  <ul class="pagination" id="pager">
+		    <li id="pre">
+		      <a aria-label="上一页">
+		        <span aria-hidden="true">&laquo;</span>
+		      </a>
+		    </li>
+		    <!-- 页码排列位置 -->
+		    <li id="next">
+		      <a aria-label="下一页">
+		        <span aria-hidden="true">&raquo;</span>
+		      </a>
+		    </li>
+		  </ul>
+		</nav>
+		</div>
+	</div>
+</div>
+
+</block>
+
+
+</div><!--/container-->
+<!--底部块-->
+<block name="end">
+	<script src="/Public/js/pms_pager.js"></script>
+<script type="text/javascript">
+	var page,resultCount,perPage;
+	page = {$page|default="1"};
+	resultCount = {$resultCount|default="0"};
+	perPage = {$perPage|default="15"};
+
+	function initial(){
+		//run when page loaded
+		if(!resultCount) $('thead').hide();
+		makePager("#pager", page, resultCount, perPage, goPage);
+		$('#pList tr[id]').click(function(e) {
+			location.href = '../../People/view/' + $(this).attr('id');
+		})
+	}
+
+	function goPage(e){
+		var to;
+		to = e.data.to;
+		location.href = to;
+	}
+</script>
+</block>
+</body>	
+</html>

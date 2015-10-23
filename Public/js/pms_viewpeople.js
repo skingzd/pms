@@ -40,9 +40,10 @@ function buildData(record) {
 		key = $(e).attr('id');
 		val = $(e).val();
 		//如果是checkbox
-		if ($(e).is('[type=checkbox]')) val = $(e).is(':checked') ? 1 : 0;
+		if ($(e).is('[type=checkbox]'))	val = $(e).is(':checked') ? 1 : 0;
 		data[key] = val;
 	});
+
 	return data;
 }
 /**
@@ -151,11 +152,11 @@ function save(e) {
 	url = '/index.php/Common/editRecord/' + item + '/' + recordId + '/1';
 	//if action is addNew,change the submit url
 	if (recordId == 'newadd') url = '/index.php/Common/addRecord/' + item + '/'+ pid +'/1';
-
+	//规整数据，0值设置为Null
 	$.each(data, function(index, val) {
-		 if(val == '' || val =="0000-00-00") data[index] = null;
+		 if(val === '') data[index] = null;
 	});
-
+	// console.log(data);
 	L(item + recordId);
 	$.ajax({
 			url: url,

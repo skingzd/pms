@@ -109,7 +109,7 @@
 <block name="end">
   <script type="text/javascript">
 
-  var dmList,perPage=3;
+  var dmList,perPage=3,goTo = {$goTo|default="null"};
 
   function initial(){
     var txt,rootDm = {$rootDm};
@@ -119,11 +119,13 @@
     $("#dmPath").empty().append(txt);
     // });
     dmListLoadFrom(0);
+    
     $("#navbar li#department").addClass("active");
     $("#content-right").hide();
     $("#dmListController").click(function(){
       $("#dmList").slideToggle(300);
     })
+    if(goTo) pListLoadFrom(goTo);
   }
   </script>
 <script src="/Public/js/pms_pager.js"></script>

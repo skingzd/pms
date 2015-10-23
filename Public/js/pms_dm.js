@@ -3,7 +3,6 @@ function pListLoadFrom(id, page) {
   if($("#subTitle").text() == "加载中...") return false;
   page = typeof(page) == "undefined" ? 1 : page; //默认第一页
   L('pListLoadFrom');
-  setTimeout(3000);
   $("#subTitle").text("加载中...");
   $("#content-right").show();
   $("#pList").empty();
@@ -33,7 +32,7 @@ function pListLoadFrom(id, page) {
     });
     // ./each
     //输出翻页条
-    console.log("#pager", page, p["resultCount"], perPage, goPage, id);
+    // console.log("#pager", page, p["resultCount"], perPage, goPage, id);
     makePager("#pager", page, p["resultCount"], perPage, goPage, id);
     $("#subTitle").text("共" + p["resultCount"] + "人");
     
@@ -43,7 +42,13 @@ function pListLoadFrom(id, page) {
     L('pListLoadFrom');
   });
   //.get
-  $("#pListTitle").text(dmList[id]["n"]);
+  L('getDmName');
+  $.get('/index.php/Common/getDm/' + id + '/0/1/', function(data) {
+    console.log(data);
+    $("#pListTitle").text(data.n);
+    L('getDmName');
+  });
+  
 }
 
 function dmListLoadFrom(id) {

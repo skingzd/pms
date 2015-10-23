@@ -9,20 +9,21 @@ Class CommonController extends Controller{
 		'trans'		=>	array('table'=>'Transfer','key'=>'trans_id', 'order'=>'date_move desc'),
 	);
 	
-	public function getSearch($item, $words, $ajax = false){
+	public function getSearch($item, $word, $ajax = false){
 		A('User')->checkLevel();
 		$d = D($this->ItemIndex[$item]['table']);
 		$where['status'] = 1;
-		if(strlen($words)<15){//关键词小于15则按照姓名查找
-			$where['name'] = array('LIKE',"%$words%");
+		
+		if((int) $word[0] == 0 && strlen($word) < 15){//首位转为数字为0,总长度不超过15位判断为字符查找
+			$where['name'] = array('LIKE',"%$word%");
 			$result = $d
 				->where($where)
 				// ->fetchSql()
 				->order( array($this->ItemIndex[$item]['order']) )
 				->select();
 		}else{
-			//长度超过人名则身份证匹配
-			$where['pid'] = $words;
+			//首位非0则按身份证查找
+			$where['pid'] = $word;
 			$result = $d
 					// ->fetchSql()
 					->order( array( $this->ItemIndex[$item]['order']) )
@@ -164,7 +165,7 @@ Class CommonController extends Controller{
 	}
 
 	public function delRecord($item, $id, $ajax = false){
-
+		A('User')->checkLevel(5);
 		$item == 'base' ? A('User')->checkLevel(7) : A('User')->checkLevel(3);
 
 		if($item == 'base') {
@@ -243,9 +244,31 @@ Class CommonController extends Controller{
 		if($ajax) $this->ajaxReturn($dm);
 		return $dm;
 	}
+	
+	public function searchDm($word = null, $ajax = false){
+		A('User')->checkLevel();
+		$m = M('Department');
+		$where['dm_name'] = array('LIKE',"%$word%");
+		$where['status'] = 1;
+		$resultDm = $m
+				->field('dm_id id, dm_name name')
+				->where($where)
+				->select();
+		if($resultDm){
+			foreach ($resultDm as $value) $result[$value['id']] = $value['name'];
+		}
+		// dump($result);
+		if(!$result) {
+			if($ajax)$this->ajaxReturn(false);
+			return false;
+		}
+		if($ajax)$this->ajaxReturn($result);
+		return $result;
+	}
 
 	public function getDmP($id = '0', $includeChild = false, $page = 1, $ajax = false)
 	{
+		A('User')->checkLevel();
 		$p = M("People");
 		$where['status'] = 1;
 		$where["dm_id"] = $id;
@@ -277,6 +300,7 @@ Class CommonController extends Controller{
 	}
 
 	public function getDmTree($byId = 0, $ajax = false){
+		A('User')->checkLevel();
 		$d = M('Department');
 		$where['status'] = 1;
 		$dm = $d
@@ -339,7 +363,7 @@ Class CommonController extends Controller{
 			}
 			return $result;
 	}
-	protected function convertTimeStamp(&$record){
+	public function convertTimeStamp(&$record){
 		foreach ($record as $key => $value) {
 			if(strpos($key,'time') !== false){
 				$record[$key] = date("Y-m-d i:s",$value);

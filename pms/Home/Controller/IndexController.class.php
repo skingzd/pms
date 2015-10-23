@@ -85,10 +85,12 @@ class IndexController extends Controller {
         $this->display();
     }
 
-    public function department(){
+    public function department($goTo = null){
         A('User')->checkLevel();
         $rootDm = A('Common')->getDm(0,0,0);
-        $this->assign("rootDm",json_encode($rootDm));
+
+        $this->assign("rootDm", json_encode($rootDm));
+        $this->assign('goTo', $goTo);
         $this->display();
     }
 

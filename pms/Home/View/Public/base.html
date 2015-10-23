@@ -28,7 +28,7 @@
   </div>
   <!-- 搜索框 -->
   <div class="top-search">
-    <input class="form-control"type="text" placeholder="输入人员姓名、身份证号码或单位名" />
+    <input class="form-control"type="text" placeholder="输入人员姓名、身份证号码或单位名" id="searchBox">
   </div>
   <!-- 导航栏 -->
 	<nav class="navbar navbar-default">
@@ -72,32 +72,14 @@
 </div><!--/container-->
 <script src="/Public/js/jquery.min.js"></script>
 <script src="/Public/js/bootstrap.min.js"></script>
+<script src="/Public/js/pms.js"></script>
 <script>
-var loaded = {};
   $("document").ready(function(){
     $("#loading").hide();
-    initial();    
+    searchAble();
+    initial();
  });
-function L(op){
-  //loading判断条
-  var hide = true,i;
-  $('#loading').show();
-  
-  if(typeof(loaded[op]) == "undefined"){
-    loaded[op] = false;
-  }else{
-    loaded[op] = loaded[op] ? false : true;
-  }
 
-  $.each(loaded,function(i,v){
-    if(loaded[i] == false) hide = false;
-    // console.log(i);
-  });
-
-  // console.log(loaded);
-  // console.log('hide:'+hide);
-  if(hide) $('#loading').hide();
-}
 </script>
 <block name="end">
 

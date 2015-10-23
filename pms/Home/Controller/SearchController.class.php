@@ -10,7 +10,7 @@ Class SearchController extends Controller{
 		$perPage                  = 15; //每页显示条数
 		$where["name"]            = array("LIKE","%".trim($i['name'])."%");
 		$where["birthday"]        = array( trim($i['birthdayB']), trim($i['birthday']) );
-		$where['date_start_work'] = array( trim($i['workdateB']), trim($i['workdate'])  );
+		$where['date_startwork'] = array( trim($i['workdateB']), trim($i['workdate'])  );
 		$where['post_level']      = array( trim($i['postLevelB']), trim($i['postLevel']) );
 		$where['title_level']     = array( trim($i['titleLevelB']), trim($i['titleLevel']) );
 		$where['edu_level']       = array( trim($i['eduLevelB']), trim($i['eduLevel']) );
@@ -74,7 +74,50 @@ Class SearchController extends Controller{
 		$this->display();
 	}
 
-	public function result($type = null, $words = null){
+	public function result($word = null, $page =1){
+		$A = A('Common');
+		A("User")->checkLevel();
+		if(!$word) $this->error('请输入搜索条件');
+
+		$d = D('People');
+
+		if((int) $word[0] == 0 && strlen($word) < 15){
+		//首位转为数字为0,总长度不超过15位判断为字符查找
+			$where['name'] = array('LIKE',"%$word%");
+		}else{
+		//首位非0则按身份证查找
+			$where['pid'] = $word;			
+		}
+		$perPage = 15;
+		$resultCount = $d->where($where)->count(1);
+		$record = $d
+				->field('pid, name, sex, birthday, date_startwork, post, post_level')
+				->where($where)
+				->page($page, $perPage)
+				->select();
+
+		if(!$record) $this->assign('msg','未找到匹配人员');
+
+		$postLevelIndex = A("Index")->postLevelIndex;
+		$sexIndex = array( "0" => "女", "1" => "男" );
+
+		foreach ($record as $key => $value) {	
+			// $A->convertTimeStamp($value);
+			$value["post_level"] = $postLevelIndex[$value["post_level"]];
+			$value["sex"]        = $sexIndex[$value["sex"]];
+			$value["no"]         = $key + 1 + (($page-1) * $perPage);
+			$record[$key]        = $d->parseFieldsMap($value);
+			// dump($postLevelIndex[$value["post_level"]]);
+		}
+
+		// dump($record);
+		$this->assign("page",$page);
+		$this->assign("perPage",$perPage);
+		$this->assign('resultCount',$resultCount);
+		
+		$this->assign('record',$record);
+		$this->assign('dm',$A->searchDm($word));
+		dump($A->searchDm($word));
 		$this->display();
 	}
 }
