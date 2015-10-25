@@ -335,33 +335,36 @@ Class CommonController extends Controller{
 
 	public function changeIdOrName($type,$id){
 		//修改ID或姓名
-		if(!IS_POST) $this->redirect('Index/index');//不是POST方法则返回
-		A('User')->checkLevel(7);
+		if(IS_POST){
+			A('User')->checkLevel(7);
 		
 			$m = M();
-			$newId = I('post.newId',false);
-			$newName = I('post.newName',false);
-			$chkIdResult = $m->table('__PEOPLE__')->where("pid='%s'",$d);
-			if(!$chkIdResult) return array('_msg','人员不存在');
+			$chkIdResult = $m->table('__PEOPLE__')->where("pid='%s'",$id);
+			if(!$chkIdResult) $this->ajaxReturn('人员不存在');
+
 			if($type == 'id'){
+				$newId = I('post.newId',false);
 				//检查重复后更新people/education/title/transfer的ID
-				if(!$newId) return array('_msg','新身份证不能为空');
-				$chkNewIdResult = $m->table('__PEOPLE__')->where("pid='%s'",$newId);
-				if($chkNewIdResult) return array('_msg','新身份证重复');
+				if(!$newId) $this->ajaxReturn('新身份证不能为空');
+				$chkNewIdResult = $m->table('__PEOPLE__')->where("pid='%s'",$newId)->find();
+				if($chkNewIdResult) $this->ajaxReturn('新身份证重复');
 				$result['基本信息'] = $m->table('__PEOPLE__')->where("pid='%s'",$id)->setField('pid',$newId);
 				$result['学历'] = $m->table('__EDUCATION__')->where("pid='%s'",$id)->setField('pid',$newId);
 				$result['职称'] = $m->table('__TITLE__')->where("pid='%s'",$id)->setField('pid',$newId);
 				$result['调动'] = $m->table('__TRANSFER__')->where("pid='%s'",$id)->setField('pid',$newId);
 			}
 			if($type == 'name'){
+				$newName = I('post.newName',false);
 				//更新people/education/title/transfer的name
-				if(!$newName)  return array('_msg','新姓名证不能为空');
+				if(!$newName)  $this->ajaxReturn('新姓名证不能为空');
 				$result['基本信息'] = $m->table('__PEOPLE__')->where("pid='%s'",$id)->setField('name',$newName);
 				$result['学历'] = $m->table('__EDUCATION__')->where("pid='%s'",$id)->setField('name',$newName);
 				$result['职称'] = $m->table('__TITLE__')->where("pid='%s'",$id)->setField('name',$newName);
 				$result['调动'] = $m->table('__TRANSFER__')->where("pid='%s'",$id)->setField('name',$newName);
 			}
-			return $result;
+			$this->ajaxReturn($result);
+		}
+		
 	}
 	public function convertTimeStamp(&$record){
 		foreach ($record as $key => $value) {

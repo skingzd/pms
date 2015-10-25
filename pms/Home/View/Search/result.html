@@ -11,7 +11,7 @@
   <block name="head">
   	<style>
   	.msg{
-  		margin:  20px 15px;
+  		margin:  5px 15px;
   		padding: 5px 25px;
   		border:1px solid #aaa;
   		border-radius: 5px;
@@ -47,7 +47,11 @@
 
 <block name="content">
 <div class="container content-min-height">
-		<div class="msg">提示：{$msg}</div>
+	
+<!-- <if condition="$msg neq null">
+	<div class="msg">提示：{$msg}</div>
+</if> -->
+
 	<div class="dmbox">
 		<p>相关部门:</p>
 		<ul>

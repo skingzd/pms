@@ -66,6 +66,10 @@
    	border:1px solid #999;
    	box-shadow: 0 0 20px #888;
    }
+   .edit-icon{
+   	padding:5px;
+	cursor:pointer;
+   }
     </style>
   </block>
 </head>
@@ -88,7 +92,14 @@
 	  <div class="col-sm-12 col-md-6">
 			<div class="form-group">
 				<label for="pid" class="col-sm-3 control-label">身份证</label>
-				<div class="col-sm-9"><input disabled="disabled" type="text" id="id" class="form-control"></div>
+				<div class="col-sm-6"><input disabled="disabled" type="text" id="id" class="form-control" readonly="readonly"></div>
+			<if condition="$userLevel egt 5">
+				<div class="col-sm-2" id="editIdPanel" style="display:none;">
+					<span class="glyphicon glyphicon-pencil edit-icon"  data-toggle="tooltip" data-placement="top" title="更改身份证" onClick="changeId(this);"></span>
+					<span class="glyphicon glyphicon-ok edit-icon" data-toggle="tooltip" data-placement="top" title="保存更改" onClick="saveId(this);" style="display:none;"></span>
+					<span class="glyphicon glyphicon glyphicon-remove edit-icon" data-toggle="tooltip" data-placement="bottom" title="取消修改" onClick="cancelEditId(this);" style="display:none;"></span>
+				</div>
+			</if>
 			</div>
 
 			<div class="form-group">

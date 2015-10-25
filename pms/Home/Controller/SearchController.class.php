@@ -96,11 +96,11 @@ Class SearchController extends Controller{
 				->page($page, $perPage)
 				->select();
 
-		if(!$record) $this->assign('msg','未找到匹配人员');
-
 		$postLevelIndex = A("Index")->postLevelIndex;
 		$sexIndex = array( "0" => "女", "1" => "男" );
 
+		// if(!$record) $this->assign('msg','未找到匹配人员');
+		
 		foreach ($record as $key => $value) {	
 			// $A->convertTimeStamp($value);
 			$value["post_level"] = $postLevelIndex[$value["post_level"]];
