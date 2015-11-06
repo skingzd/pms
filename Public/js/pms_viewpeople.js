@@ -120,6 +120,7 @@ function edit(e) {
 	$(record).find('#editTip').hide(300);
 	$(record).find('#editPanel').show(300).find('#btnShowSelector').show(300);
 	$(record).find('#btnShowSelector').show(300);
+	$(record).find('#editIdPanel').show(300);
 
 }
 
@@ -134,6 +135,7 @@ function cancel(e) {
 		$('#baseInfo').find('#editPanel').hide(300).find('#btnShowSelector').hide(300);
 		$('#baseInfo').find('#btnShowSelector').hide(300);
 		$('#baseInfo').find('#editTip').show(300);
+		$(record).find('#editIdPanel').hide();
 	}
 	if ($(record).attr('id') == 'newadd') {
 		$(record).remove();
@@ -252,6 +254,7 @@ function prepareAddNew(){
 	// 设置输入可用
 	edit($('#baseInfo'));
 	// 设置编辑控制面板
+	$('#baseInfo #id').removeAttr('readonly').parent().removeClass().addClass('col-sm-9').next().remove(); //设置身份证框可用、并删除编辑身份证按钮div
 	$('#baseInfo #editPanel').show(300).find("a:contains('删除')").remove();
 	$('#baseInfo #editPanel').find("a:contains('取消')").unbind('onClick').click(function() {
 		window.history.go(-1);
@@ -270,4 +273,49 @@ function checkData(e){
 	var item, record;
 	item = getItem(e);
 	record = getRecord(e);
+}
+
+function changeId(e){
+	$(e).parent().children('span').show(300);
+	$(e).hide();
+	$('#baseInfo #id').removeAttr('readonly');
+}
+
+function saveId(e){
+	var newId,txt = '变更成功，更新情况如下：\n\n';
+	newId = $('#baseInfo #id').val();
+	if(confirm('确定修改身份证为：' + $('#baseInfo #id').val() + ' ?')){
+		$.ajax({
+			url: '/index.php/Common/changeIdOrName/id/' + pid,
+			type: 'POST',
+			data: {'newId' : newId},
+		})
+		.done(function(msg) {
+			console.log(msg);
+			if(typeof(msg) == 'string'){
+				alert(msg);
+			}
+			if(typeof(msg) == 'object'){
+				$.each(msg, function(index, val) {
+					txt += index + ':' + val + '条数据, \n'
+				});
+				alert(txt);
+				location.href = newId;
+			}
+			
+		})
+		.fail(function() {
+			alert('服务器通信失败')
+		})
+		.always(function() {
+			console.log();
+		});
+	}
+	// cancelEditId(e);
+}
+
+function cancelEditId(e){
+	$(e).parent().children('span').hide();
+	$( $(e).parent().children('span')[0] ).show();
+	$('#baseInfo #id').attr('readonly','readonly').val(pid);
 }
