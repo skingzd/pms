@@ -8,9 +8,9 @@ class SetupController extends Controller{
 
 		$m = M('People');
 		$havePeople = $m->count(1);
-		// while ($havePeople >= 0) {
+		while ($havePeople >= 0) {
 			$havePeople--;
-
+			if($havePeople<0) break;
 			$namePos[0] = mb_strcut($nameLib, rand(0,$nameLibNum), 3 ,'utf-8');
 			$namePos[1] = mb_strcut($nameLib, rand(0,$nameLibNum), 3 ,'utf-8');
 			$namePos[2] = mb_strcut($nameLib, rand(0,$nameLibNum), 3 ,'utf-8');
@@ -39,15 +39,63 @@ class SetupController extends Controller{
 				echo "X <br> \n";
 			}
 			
-		// }
+		}
+	}
 
+	public function randomId(){
+		$p          = M('People');
+		$e          = M('Education');
+		$t          = M('Title');
+		$trans      = M('Transfer');
+		$last       = 'X0123456789X';
+		$havePeople = $p->count(1);
+		set_time_limit(0);
+		while ($havePeople >= 0) {
 
+		if($havePeople%10 == 0){
+			sleep(0.2);
+			ob_flush();
+		}
 
+		$havePeople--;
+		if($havePeople<0) break;
+		$rHead = rand(1,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9) . rand(0,9);
+		$rLast = rand(0,9) . rand(0,9) . rand(0,9) . $last[rand(0,11)];
 
+		$pid = $p
+				->limit($havePeople,1)
+				->field('pid')
+				->select();
+		$pid = $pid[0]['pid'];
 
+		$newId = $rHead . substr($pid, 6, 8) . $rLast;
+		// dump($newId);
+		$where['pid'] = $pid;
+		$resultP= $p
+				// ->fetchSql()
+				->where($where)
+				->setField('pid',$newId);
 
+		$resultE = $e
+				// ->fetchSql()
+				->where($where)
+				->setField('pid',$newId);
 
+		$resultT = $t
+				// ->fetchSql()
+				->where($where)
+				->setField('pid',$newId);
 
+		$resultTrans = $trans
+					// ->fetchSql()
+					->where($where)
+					->setField('pid',$newId);
+		// dump($resultP);
+
+		echo "[{$havePeople}] ID: $pid -> $newId ,People:{$resultP} ,Education:{$resultE}, Title:{$resultT}, Transfer:{$resultTrans}. <br>\n";
+
+		flush();
+		}
 
 	}
 }
