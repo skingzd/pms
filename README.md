@@ -1,4 +1,4 @@
-##pms(PEOPLE MANAGE SYSTEM)
+# pms(PEOPLE MANAGE SYSTEM)
 ### **主要实现功能**：
 > - 人员基本信息浏览、查询，包括高级组合条件查询
 -	登陆后能够浏览当前库存人员状态
@@ -8,7 +8,7 @@
 ##各个模块功能分配：
 >带 * 表示需要高级权限
 
-###人员基本信息管理 [PEOPLE CONTROLLER]
+### 人员基本信息管理 [PEOPLE CONTROLLER]
 -	[index] 显示统计信息，人员总数、各级别人员数
 -	[addNew] 新进人员基本信息录入
 -	[edit] 人员基本信息变更
@@ -16,7 +16,7 @@
 
 
 
-###用户控制面板 [USER CONTROLLER]
+### 用户控制面板 [USER CONTROLLER]
 -	[checkLevel] 检测当前登录用户权限
 -	[login] 用户登录功能
 -	[changePwd] 修改用户密码
@@ -24,12 +24,12 @@
 -	[changeLevel] 修改用户权限 *
 -   [departmentM] 管理部门
 
-###高级搜索 [ADVSEARCH CONTROLLER]
+### 高级搜索 [ADVSEARCH CONTROLLER]
 >	Search控制器实现按条件筛选
 
 
 
-##各个模块功能分配  
+## 各个模块功能分配  
 > ! 表示权限要求,^ 表示保护方法
 
 ### Index Controller
@@ -45,7 +45,7 @@
 - *index* 搜索项目，指定模块或信息完成搜索
 - *adv* 复杂搜索，组合条件搜索
 
-###Common Controller
+### Common Controller
 - *getSearch* 返回人员/ID搜索结果[AJAX]
 - *getRecord* 返回具体项目KEY的记录[AJAX]
 - *editRecord* 保存POST指定项目数据[AJAX]
